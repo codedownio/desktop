@@ -12,25 +12,35 @@
       let
         pkgs = import nixpkgs { inherit system; };
 
-        editor = with pkgs; let
-          binary = fetchurl {
-            url = "https://github.com/codedownio/desktop/releases/download/v0.1.0.0/codedown-editor";
-            sha256 = "sha256-F6mJF6klZRyVOciOE4TTemP/DUIrtYdTDgHDNlBuxa8=";
-          };
-          in
-            runCommand "codedown-editor" {} ''
-              mkdir -p $out/bin
-              cp ${binary} $out/bin/codedown-editor
-            '';
+        util = pkgs.callPackage ./util.nix {};
+
+        editor = util.packageBinary {
+          name = "codedown-editor";
+          url = "https://github.com/codedownio/desktop/releases/download/v0.1.0.0/codedown-editor";
+          sha256 = "sha256-F6mJF6klZRyVOciOE4TTemP/DUIrtYdTDgHDNlBuxa8=";
+        };
 
         runner = pkgs.fetchurl {
           url = "https://github.com/codedownio/desktop/releases/download/v0.1.0.0/codedown-runner";
-          sha256 = "sha256-F6mJF6klZRyVOciOE4TTemP/DUIrtYdTDgHDNlBuxa7=";
+          sha256 = "sha256-WLgDASgNPUvwYsLkPwMQNEirtrHDD+xGDmxJW3qY40I=";
+        };
+
+        server = pkgs.fetchurl {
+          url = "https://github.com/codedownio/desktop/releases/download/v0.1.0.0/codedown-server";
+          sha256 = "sha256-e63+i6OtmldC8+zS6FmQ0+6uT5E9funUi8yTOwhZ90w=";
         };
 
       in rec {
         apps = {
-
+          default = {
+            type = "app";
+            program = let
+              script = with pkgs; writeShellScript "codedown-server.sh" ''
+                ${server} -c ${packages.default}
+              '';
+            in
+              "${script}";
+          };
         };
 
         packages = {
