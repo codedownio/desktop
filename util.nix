@@ -8,6 +8,6 @@
   in
     runCommand name {} ''
       mkdir -p $out/bin
-      install --mode=0644 ${binary} $out/bin/
+      install --mode=0555 ${binary} $out/bin/${name}
     '';
 }

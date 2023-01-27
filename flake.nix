@@ -20,12 +20,14 @@
           sha256 = "sha256-F6mJF6klZRyVOciOE4TTemP/DUIrtYdTDgHDNlBuxa8=";
         };
 
-        runner = pkgs.fetchurl {
+        runner = util.packageBinary {
+          name = "codedown-runner";
           url = "https://github.com/codedownio/desktop/releases/download/v0.1.0.0/codedown-runner";
           sha256 = "sha256-WLgDASgNPUvwYsLkPwMQNEirtrHDD+xGDmxJW3qY40I=";
         };
 
-        server = pkgs.fetchurl {
+        server = util.packageBinary {
+          name = "codedown-server";
           url = "https://github.com/codedownio/desktop/releases/download/v0.1.0.0/codedown-server";
           sha256 = "sha256-e63+i6OtmldC8+zS6FmQ0+6uT5E9funUi8yTOwhZ90w=";
         };
@@ -36,7 +38,7 @@
             type = "app";
             program = let
               script = with pkgs; writeShellScript "codedown-server.sh" ''
-                ${server} -c ${packages.default}
+                ${server}/bin/codedown-server -c ${packages.default}
               '';
             in
               "${script}";
