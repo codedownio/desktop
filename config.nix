@@ -3,6 +3,7 @@
 
 , templates
 , editor
+, runner
 }:
 
 lib.generators.toJSON {} {
@@ -40,6 +41,7 @@ lib.generators.toJSON {} {
     description = "Local runner";
     config = {
       tag = "process";
+      runner_executable = "${runner}";
       log_dir = "/tmp";
     };
     store = "default"; # Must be a key into the stores
@@ -68,8 +70,5 @@ lib.generators.toJSON {} {
   runners_root = "/local_runners";
   work_dir = "/work";
   session_token_signing_key = "";
-  editor_read_only_binds = [];
   editor_bin_dir = "${editor}/bin";
-  email_login_provider = {};
-  login_providers = [];
 }

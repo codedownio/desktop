@@ -34,7 +34,24 @@
     "root": {
       "inputs": {
         "flake-utils": "flake-utils",
-        "nixpkgs": "nixpkgs"
+        "nixpkgs": "nixpkgs",
+        "templates": "templates"
+      }
+    },
+    "templates": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1674682048,
+        "narHash": "sha256-idR/FP/BsXI129/tOKDq7yaGv2fP4SyfIM+xmw2ZnIQ=",
+        "owner": "codedownio",
+        "repo": "templates",
+        "rev": "f22d17f7dfb1c2be58351ad109233a9fdf8228e6",
+        "type": "github"
+      },
+      "original": {
+        "owner": "codedownio",
+        "repo": "templates",
+        "type": "github"
       }
     }
   },
