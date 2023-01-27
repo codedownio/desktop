@@ -14,22 +14,40 @@
 
         util = pkgs.callPackage ./util.nix {};
 
+        frontend = pkgs.fetchzip {
+          url = "https://github.com/codedownio/desktop/releases/download/v0.2.0.0/codedown-frontend.tar.gz";
+          sha256 = "sha256-YBnR68XBHFLpOQCpsPajaYVQcoksP2Wb+hJA75JvkeA=";
+          stripRoot = false;
+        };
+
+        staticDocs = pkgs.fetchzip {
+          url = "https://github.com/codedownio/desktop/releases/download/v0.2.0.0/codedown-static-docs.tar.gz";
+          sha256 = "sha256-UG+y5n433dKKvbCP0FXWk5DYOGjigzOxUxOPwCClaas=";
+          stripRoot = false;
+        };
+
         editor = util.packageBinary {
           name = "codedown-editor";
-          url = "https://github.com/codedownio/desktop/releases/download/v0.1.0.0/codedown-editor";
-          sha256 = "sha256-F6mJF6klZRyVOciOE4TTemP/DUIrtYdTDgHDNlBuxa8=";
+          binary = pkgs.fetchurl {
+            url = "https://github.com/codedownio/desktop/releases/download/v0.2.0.0/codedown-editor";
+            sha256 = "1by5dr83dhq11r9qgd9b886zyqvssf2173n876aiqr95m4bqka8p";
+          };
         };
 
         runner = util.packageBinary {
           name = "codedown-runner";
-          url = "https://github.com/codedownio/desktop/releases/download/v0.1.0.0/codedown-runner";
-          sha256 = "sha256-WLgDASgNPUvwYsLkPwMQNEirtrHDD+xGDmxJW3qY40I=";
+          binary = pkgs.fetchurl {
+            url = "https://github.com/codedownio/desktop/releases/download/v0.2.0.0/codedown-runner";
+            sha256 = "0hp3k1x5njbc1r3fq3y3n6vanj1l201kzr62cbq4ng8d500h7f2q";
+          };
         };
 
         server = util.packageBinary {
           name = "codedown-server";
-          url = "https://github.com/codedownio/desktop/releases/download/v0.1.0.0/codedown-server";
-          sha256 = "sha256-e63+i6OtmldC8+zS6FmQ0+6uT5E9funUi8yTOwhZ90w=";
+          binary = pkgs.fetchurl {
+            url = "https://github.com/codedownio/desktop/releases/download/v0.2.0.0/codedown-server";
+            sha256 = "1xpx88cp1qkznkjj09wnmgv4910azyk3vb4i9aww8ffy457mwhn7";
+          };
         };
 
       in rec {
@@ -49,7 +67,10 @@
           default = pkgs.writeTextFile {
             name = "codedown-config.json";
             text = pkgs.callPackage ./config.nix {
-              inherit templates editor runner;
+              bootstrapNixpkgs = pkgs.path;
+              inherit staticDocs;
+              storeTemplate = pkgs.hello; # TODO
+              inherit editor frontend runner templates;
             };
           };
         };

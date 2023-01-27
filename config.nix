@@ -1,13 +1,18 @@
 { lib
 , fetchurl
 
-, templates
+, bootstrapNixpkgs
+, staticDocs
+, storeTemplate
+
 , editor
+, frontend
+, templates
 , runner
 }:
 
 lib.generators.toJSON {} {
-  port = 80;
+  port = 8585;
   mode = { tag = "raw_electron"; };
   disable_auth = true;
   disable_landing_page = true;
@@ -26,8 +31,8 @@ lib.generators.toJSON {} {
     description = "Default package store config";
     config = {
       tag = "sandboxed";
-      template = "/store-template";
-      bootstrap_nixpkgs = "/bootstrap-nixpkgs";
+      template = storeTemplate;
+      bootstrap_nixpkgs = bootstrapNixpkgs;
       default_env = "/nix/default-env";
       read_only_binds = [
         ["/etc/hosts" "/etc/hosts"]
@@ -42,7 +47,7 @@ lib.generators.toJSON {} {
     config = {
       tag = "process";
       runner_executable = "${runner}/bin/codedown-runner";
-      log_dir = "/tmp";
+      # log_dir = "/tmp";
     };
     store = "default"; # Must be a key into the stores
   }];
@@ -60,15 +65,14 @@ lib.generators.toJSON {} {
       }];
     }];
   };
-  database = { type = "sqlite"; path = "/conf/sqlite.db"; };
+  database = { type = "sqlite"; path = "CODEDOWN_ROOT/db.sqlite"; };
   email_from = "admin@codedown.io";
   email_sender = { type = "null"; };
-  app_dir = "/srv/frontend";
-  static_docs_dir = "/srv/static_docs";
-  sandboxes_root = "/sandboxes";
-  package_stores_root = "/local_stores";
-  runners_root = "/local_runners";
-  work_dir = "/work";
+  app_dir = "${frontend}";
+  static_docs_dir = staticDocs;
+  sandboxes_root = "CODEDOWN_ROOT/sandboxes";
+  package_stores_root = "CODEDOWN_ROOT/local_stores";
+  runners_root = "CODEDOWN_ROOT/local_runners";
   session_token_signing_key = "";
   editor_bin_dir = "${editor}/bin";
 }
