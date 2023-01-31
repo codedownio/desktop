@@ -56,7 +56,20 @@
             type = "app";
             program = let
               script = with pkgs; writeShellScript "codedown-server.sh" ''
-                ${server}/bin/codedown-server -c ${packages.default}
+                CONFIG_DIR=''${XDG_CONFIG_HOME:-$HOME/.config}/codedown
+
+                if [ ! -d "CONFIG_DIR" ]; then
+                  echo "Creating $CONFIG_DIR"
+                  mkdir -p "$CONFIG_DIR"
+                fi
+
+                CONFIG_FILE="$CONFIG_DIR/config.json"
+                if [ ! -f "CONFIG_FILE" ]; then
+                  echo "Installing initial configuration to $CONFIG_FILE"
+                  ${pkgs.gnused}/bin/sed "s|CODEDOWN_ROOT|$CONFIG_DIR|g" "${packages.default}" > "$CONFIG_FILE"
+                fi
+
+                ${server}/bin/codedown-server -c "$CONFIG_FILE"
               '';
             in
               "${script}";
@@ -68,8 +81,9 @@
             name = "codedown-config.json";
             text = pkgs.callPackage ./config.nix {
               bootstrapNixpkgs = pkgs.path;
+              defaultPackageStoreEnv = pkgs.hello; # TODO
               inherit staticDocs;
-              storeTemplate = pkgs.hello; # TODO
+
               inherit editor frontend runner templates;
             };
           };

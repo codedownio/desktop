@@ -2,8 +2,8 @@
 , fetchurl
 
 , bootstrapNixpkgs
+, defaultPackageStoreEnv
 , staticDocs
-, storeTemplate
 
 , editor
 , frontend
@@ -30,10 +30,11 @@ lib.generators.toJSON {} {
     display_name = "Default";
     description = "Default package store config";
     config = {
-      tag = "sandboxed";
-      template = storeTemplate;
+      tag = "preexisting";
       bootstrap_nixpkgs = bootstrapNixpkgs;
-      default_env = "/nix/default-env";
+      default_env = defaultPackageStoreEnv;
+      nix_path = "/nix";
+      store_path = "/nix/store";
       read_only_binds = [
         ["/etc/hosts" "/etc/hosts"]
         ["/etc/resolv.conf" "/etc/resolv.conf"]
