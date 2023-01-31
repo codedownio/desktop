@@ -16,7 +16,7 @@
 
         frontend = pkgs.fetchzip {
           url = "https://github.com/codedownio/desktop/releases/download/v0.2.0.0/codedown-frontend.tar.gz";
-          sha256 = "sha256-YBnR68XBHFLpOQCpsPajaYVQcoksP2Wb+hJA75JvkeA=";
+          sha256 = "sha256-Mlm4tIBYbn24j0UVY2KJHyRKFmt1rpHLZPwfR+YtNys=";
           stripRoot = false;
         };
 
@@ -46,9 +46,15 @@
           name = "codedown-server";
           binary = pkgs.fetchurl {
             url = "https://github.com/codedownio/desktop/releases/download/v0.2.0.0/codedown-server";
-            sha256 = "1xpx88cp1qkznkjj09wnmgv4910azyk3vb4i9aww8ffy457mwhn7";
+            sha256 = "0jzmbx5p5p15nfw70nygr20lbq0icp7jn4a9a0lkn0yysciayb8d";
           };
         };
+
+        wrappedServer = with pkgs; runCommand "codedown-server-wrapped" { buildInputs = [makeWrapper]; } ''
+          mkdir -p $out/bin
+          makeWrapper "${server}/bin/codedown-server" "$out/bin/codedown-server" \
+            --prefix PATH : ${lib.makeBinPath [ bubblewrap ]}
+        '';
 
       in rec {
         apps = {
@@ -69,7 +75,7 @@
                   ${pkgs.gnused}/bin/sed "s|CODEDOWN_ROOT|$CONFIG_DIR|g" "${packages.default}" > "$CONFIG_FILE"
                 fi
 
-                ${server}/bin/codedown-server -c "$CONFIG_FILE"
+                ${wrappedServer}/bin/codedown-server -c "$CONFIG_FILE"
               '';
             in
               "${script}";
