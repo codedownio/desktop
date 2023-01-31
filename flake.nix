@@ -53,7 +53,7 @@
         wrappedServer = with pkgs; runCommand "codedown-server-wrapped" { buildInputs = [makeWrapper]; } ''
           mkdir -p $out/bin
           makeWrapper "${server}/bin/codedown-server" "$out/bin/codedown-server" \
-            --prefix PATH : ${lib.makeBinPath [ bubblewrap ]}
+            --prefix PATH : ${lib.makeBinPath [ nodejs nixStatic tmux rclone pkgsStatic.busybox bubblewrap ]} # screenshotter
         '';
 
       in rec {
