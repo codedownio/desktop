@@ -5,7 +5,7 @@
 , defaultPackageStoreEnv
 , staticDocs
 
-, editor
+, editorBinDir
 , frontend
 , templates
 , runner
@@ -75,5 +75,5 @@ lib.generators.toJSON {} {
   package_stores_root = "CODEDOWN_ROOT/local_stores";
   runners_root = "CODEDOWN_ROOT/local_runners";
   session_token_signing_key = "";
-  editor_bin_dir = "${editor}/bin";
+  editor_bin_dir = "${editorBinDir}";
 }

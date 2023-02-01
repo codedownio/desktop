@@ -34,6 +34,19 @@
           };
         };
 
+        editorBinDir = with pkgs; runCommand "codedown-editor-bin-dir" {} ''
+          mkdir -p $out
+          cp -ra ${pkgsStatic.busybox}/bin/* $out
+          # For some reason some busybox symlinks are "busybox" and some are "../bin/busybox".
+          # Fix up the latter type.
+          cd $out
+          for file in $(find . -type l); do
+            ln -sf busybox "$file"
+          done
+
+          cp ${pkgsStatic.gnutar}/bin/tar $out/gnutar
+        '';
+
         runner = util.packageBinary {
           name = "codedown-runner";
           binary = pkgs.fetchurl {
@@ -53,7 +66,7 @@
         wrappedServer = with pkgs; runCommand "codedown-server-wrapped" { buildInputs = [makeWrapper]; } ''
           mkdir -p $out/bin
           makeWrapper "${server}/bin/codedown-server" "$out/bin/codedown-server" \
-            --prefix PATH : ${lib.makeBinPath [ nodejs nixStatic tmux rclone pkgsStatic.busybox bubblewrap ]} # screenshotter
+            --prefix PATH : ${lib.makeBinPath [ nodejs nixStatic tmux rclone pkgsStatic.busybox bubblewrap editor ]} # screenshotter
         '';
 
       in rec {
@@ -95,7 +108,7 @@
               defaultPackageStoreEnv = pkgs.hello; # TODO
               inherit staticDocs;
 
-              inherit editor frontend runner templates;
+              inherit editorBinDir frontend runner templates;
             };
           };
         };
