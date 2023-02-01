@@ -75,6 +75,11 @@
                   ${pkgs.gnused}/bin/sed "s|CODEDOWN_ROOT|$CONFIG_DIR|g" "${packages.default}" > "$CONFIG_FILE"
                 fi
 
+                # Make directories used by server
+                mkdir -p "$CONFIG_DIR/local_runners"
+                mkdir -p "$CONFIG_DIR/local_stores"
+                mkdir -p "$CONFIG_DIR/sandboxes"
+
                 ${wrappedServer}/bin/codedown-server -c "$CONFIG_FILE"
               '';
             in
