@@ -63,10 +63,32 @@
           };
         };
 
+        nixCustom = util.packageBinary {
+          name = "nix";
+          binary = pkgs.fetchurl {
+            url = "https://github.com/codedownio/desktop/releases/download/v0.2.0.0/nix-2.11.0-x86_64-linux";
+            sha256 = "1jzmbx5p5p15nfw70nygr20lbq0icp7jn4a9a0lkn0yysciayb8d";
+          };
+        };
+
+        screenshotterStatic = util.packageBinary {
+          name = "codedown-screenshotter-wrapped";
+          binary = pkgs.fetchurl {
+            url = "https://github.com/codedownio/desktop/releases/download/v0.2.0.0/codedown-screenshotter-0.1.0-x86_64-linux";
+            sha256 = "1jzmbx5p5p15nfw70nygr20lbq0icp7jn4a9a0lkn0yysciayb7d";
+          };
+        };
+
+        screenshotter = with pkgs; runCommand "codedown-screenshotter-go" { buildInputs = [makeWrapper]; } ''
+          mkdir -p $out/bin
+          makeWrapper ${screenshotterStatic} "$out/bin/codedown-screenshotter" \
+            --add-flags "--chrome-path ${pkgs.chromium}/bin/chromium"
+        '';
+
         wrappedServer = with pkgs; runCommand "codedown-server-wrapped" { buildInputs = [makeWrapper]; } ''
           mkdir -p $out/bin
           makeWrapper "${server}/bin/codedown-server" "$out/bin/codedown-server" \
-            --prefix PATH : ${lib.makeBinPath [ nodejs nixStatic tmux rclone pkgsStatic.busybox bubblewrap editor ]} # screenshotter
+            --prefix PATH : ${lib.makeBinPath [ nodejs nixCustom tmux rclone pkgsStatic.busybox bubblewrap editor screenshotter ]}
         '';
 
       in rec {
