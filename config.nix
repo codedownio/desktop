@@ -52,20 +52,7 @@ lib.generators.toJSON {} {
     };
     store = "default"; # Must be a key into the stores
   }];
-  templates = {
-    dir = templates;
-    sections = [{
-      display_name = "Basic";
-      templates = [{
-        tag = "sandbox";
-        name = "Python";
-        sandbox_name = {
-          namespace = "templates";
-          name = "python";
-        };
-      }];
-    }];
-  };
+  templates_dir = templates;
   database = { type = "sqlite"; path = "CODEDOWN_ROOT/db.sqlite"; };
   email_from = "admin@codedown.io";
   email_sender = { type = "null"; };

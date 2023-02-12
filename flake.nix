@@ -16,7 +16,7 @@
 
         frontend = pkgs.fetchzip {
           url = "https://github.com/codedownio/desktop/releases/download/v0.2.0.0/codedown-frontend.tar.gz";
-          sha256 = "sha256-Mlm4tIBYbn24j0UVY2KJHyRKFmt1rpHLZPwfR+YtNys=";
+          sha256 = "sha256-dagOy3gSr6TZVSkpzfj5vSzQEX5j0eDwb1GeIo1Mk98=";
           stripRoot = false;
         };
 
@@ -30,7 +30,7 @@
           name = "codedown-editor";
           binary = pkgs.fetchurl {
             url = "https://github.com/codedownio/desktop/releases/download/v0.2.0.0/codedown-editor";
-            sha256 = "1by5dr83dhq11r9qgd9b886zyqvssf2173n876aiqr95m4bqka8p";
+            sha256 = "0ifwzzs41af6a9aglil7pxq1cj4v5kjr3l8ahv4p29bdwyhbh2hc";
           };
         };
 
@@ -51,7 +51,7 @@
           name = "codedown-runner";
           binary = pkgs.fetchurl {
             url = "https://github.com/codedownio/desktop/releases/download/v0.2.0.0/codedown-runner";
-            sha256 = "0hp3k1x5njbc1r3fq3y3n6vanj1l201kzr62cbq4ng8d500h7f2q";
+            sha256 = "1wr36af1yrk898kk99vh0r3k7kdxwl8i33c26abkpz3ln06qc8rd";
           };
         };
 
@@ -59,7 +59,7 @@
           name = "codedown-server";
           binary = pkgs.fetchurl {
             url = "https://github.com/codedownio/desktop/releases/download/v0.2.0.0/codedown-server";
-            sha256 = "0jzmbx5p5p15nfw70nygr20lbq0icp7jn4a9a0lkn0yysciayb8d";
+            sha256 = "1yzajawg9czi3bdhg8xg7m7ln98hy46ykfi8pbnmzazfydfyjqks";
           };
         };
 
@@ -67,21 +67,21 @@
           name = "nix";
           binary = pkgs.fetchurl {
             url = "https://github.com/codedownio/desktop/releases/download/v0.2.0.0/nix-2.11.0-x86_64-linux";
-            sha256 = "1jzmbx5p5p15nfw70nygr20lbq0icp7jn4a9a0lkn0yysciayb8d";
+            sha256 = "1b8wly6fha8w4724xdvpas41kxg2c4gwrvp23mfh8bjjd80ycqaa";
           };
         };
 
         screenshotterStatic = util.packageBinary {
-          name = "codedown-screenshotter-wrapped";
+          name = "codedown-screenshotter";
           binary = pkgs.fetchurl {
             url = "https://github.com/codedownio/desktop/releases/download/v0.2.0.0/codedown-screenshotter-0.1.0-x86_64-linux";
-            sha256 = "1jzmbx5p5p15nfw70nygr20lbq0icp7jn4a9a0lkn0yysciayb7d";
+            sha256 = "1673p56d5fkkjqyl1jj55p0n40qm8lxgq7c90g8i6rlg3xn1cngz";
           };
         };
 
-        screenshotter = with pkgs; runCommand "codedown-screenshotter-go" { buildInputs = [makeWrapper]; } ''
+        screenshotter = with pkgs; runCommand "codedown-screenshotter-wrapped" { buildInputs = [makeWrapper]; } ''
           mkdir -p $out/bin
-          makeWrapper ${screenshotterStatic} "$out/bin/codedown-screenshotter" \
+          makeWrapper ${screenshotterStatic}/bin/codedown-screenshotter "$out/bin/codedown-screenshotter" \
             --add-flags "--chrome-path ${pkgs.chromium}/bin/chromium"
         '';
 
