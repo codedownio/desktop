@@ -30,7 +30,7 @@
           name = "codedown-editor";
           binary = pkgs.fetchurl {
             url = "https://github.com/codedownio/desktop/releases/download/v0.2.0.0/codedown-editor";
-            sha256 = "0ifwzzs41af6a9aglil7pxq1cj4v5kjr3l8ahv4p29bdwyhbh2hc";
+            sha256 = "0qppp3ixnxlgil8gjm2rl5pdkyrc92kjqb0z3204wm6pkmij8841";
           };
         };
 
@@ -51,7 +51,7 @@
           name = "codedown-runner";
           binary = pkgs.fetchurl {
             url = "https://github.com/codedownio/desktop/releases/download/v0.2.0.0/codedown-runner";
-            sha256 = "1wr36af1yrk898kk99vh0r3k7kdxwl8i33c26abkpz3ln06qc8rd";
+            sha256 = "14n9vgjmyi5kxqpkbffrbvvrig0v0fbwq8ga3kf8mq7h9wbp7dc0";
           };
         };
 
@@ -59,7 +59,7 @@
           name = "codedown-server";
           binary = pkgs.fetchurl {
             url = "https://github.com/codedownio/desktop/releases/download/v0.2.0.0/codedown-server";
-            sha256 = "1yzajawg9czi3bdhg8xg7m7ln98hy46ykfi8pbnmzazfydfyjqks";
+            sha256 = "0m2vw7i00bjmfaax7wfjppw1mhwbss0sfiv767i5vdrmqbb87caa";
           };
         };
 
@@ -75,7 +75,7 @@
           name = "codedown-screenshotter";
           binary = pkgs.fetchurl {
             url = "https://github.com/codedownio/desktop/releases/download/v0.2.0.0/codedown-screenshotter-0.1.0-x86_64-linux";
-            sha256 = "1673p56d5fkkjqyl1jj55p0n40qm8lxgq7c90g8i6rlg3xn1cngz";
+            sha256 = "0lmnv9wnjqcl6hni3l740mdvbccgxaflsipdkcn27gqr46fw4dni";
           };
         };
 

@@ -63,4 +63,7 @@ lib.generators.toJSON {} {
   runners_root = "CODEDOWN_ROOT/local_runners";
   session_token_signing_key = "";
   editor_bin_dir = "${editorBinDir}";
+  startup_jobs = [{
+    tag = "sync_templates";
+  }];
 }
