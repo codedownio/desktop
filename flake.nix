@@ -14,55 +14,6 @@
 
         util = pkgs.callPackage ./util.nix {};
 
-        frontend = pkgs.fetchzip {
-          url = "https://github.com/codedownio/desktop/releases/download/v0.2.0.0/codedown-frontend.tar.gz";
-          sha256 = "sha256-dagOy3gSr6TZVSkpzfj5vSzQEX5j0eDwb1GeIo1Mk98=";
-          stripRoot = false;
-        };
-
-        staticDocs = pkgs.fetchzip {
-          url = "https://github.com/codedownio/desktop/releases/download/v0.2.0.0/codedown-static-docs.tar.gz";
-          sha256 = "sha256-UG+y5n433dKKvbCP0FXWk5DYOGjigzOxUxOPwCClaas=";
-          stripRoot = false;
-        };
-
-        editor = util.packageBinary {
-          name = "codedown-editor";
-          binary = pkgs.fetchurl {
-            url = "https://github.com/codedownio/desktop/releases/download/v0.2.0.0/codedown-editor";
-            sha256 = "0qppp3ixnxlgil8gjm2rl5pdkyrc92kjqb0z3204wm6pkmij8841";
-          };
-        };
-
-        editorBinDir = with pkgs; runCommand "codedown-editor-bin-dir" {} ''
-          mkdir -p $out
-          cp -ra ${pkgsStatic.busybox}/bin/* $out
-          # For some reason some busybox symlinks are "busybox" and some are "../bin/busybox".
-          # Fix up the latter type.
-          cd $out
-          for file in $(find . -type l); do
-            ln -sf busybox "$file"
-          done
-
-          cp ${pkgsStatic.gnutar}/bin/tar $out/gnutar
-        '';
-
-        runner = util.packageBinary {
-          name = "codedown-runner";
-          binary = pkgs.fetchurl {
-            url = "https://github.com/codedownio/desktop/releases/download/v0.2.0.0/codedown-runner";
-            sha256 = "14n9vgjmyi5kxqpkbffrbvvrig0v0fbwq8ga3kf8mq7h9wbp7dc0";
-          };
-        };
-
-        server = util.packageBinary {
-          name = "codedown-server";
-          binary = pkgs.fetchurl {
-            url = "https://github.com/codedownio/desktop/releases/download/v0.2.0.0/codedown-server";
-            sha256 = "0m2vw7i00bjmfaax7wfjppw1mhwbss0sfiv767i5vdrmqbb87caa";
-          };
-        };
-
         nixCustom = util.packageBinary {
           name = "nix";
           binary = pkgs.fetchurl {
@@ -71,18 +22,51 @@
           };
         };
 
-        screenshotterStatic = util.packageBinary {
-          name = "codedown-screenshotter";
-          binary = pkgs.fetchurl {
-            url = "https://github.com/codedownio/desktop/releases/download/v0.2.0.0/codedown-screenshotter-0.1.0-x86_64-linux";
-            sha256 = "0lmnv9wnjqcl6hni3l740mdvbccgxaflsipdkcn27gqr46fw4dni";
+        screenshotter = let
+          screenshotterStatic = util.packageBinary {
+            name = "codedown-screenshotter";
+            binary = pkgs.fetchurl {
+              url = "https://github.com/codedownio/desktop/releases/download/v0.2.0.0/codedown-screenshotter-0.1.0-x86_64-linux";
+              sha256 = "0lmnv9wnjqcl6hni3l740mdvbccgxaflsipdkcn27gqr46fw4dni";
+            };
           };
-        };
-
-        screenshotter = with pkgs; runCommand "codedown-screenshotter-wrapped" { buildInputs = [makeWrapper]; } ''
+        in with pkgs; runCommand "codedown-screenshotter-wrapped" { buildInputs = [makeWrapper]; } ''
           mkdir -p $out/bin
           makeWrapper ${screenshotterStatic}/bin/codedown-screenshotter "$out/bin/codedown-screenshotter" \
             --add-flags "--chrome-path ${pkgs.chromium}/bin/chromium"
+        '';
+
+        frontend = pkgs.fetchzip {
+          url = "https://github.com/codedownio/desktop/releases/download/v0.2.0.0/codedown-frontend-0.2.0.0.tar.gz";
+          sha256 = "sha256-dagOy3gSr6TZVSkpzfj5vSzQEX5j0eDwb1GeIo1Mk98=";
+          stripRoot = false;
+        };
+
+        staticDocs = pkgs.fetchzip {
+          url = "https://github.com/codedownio/desktop/releases/download/v0.2.0.0/codedown-static-docs-0.2.0.0.tar.gz";
+          sha256 = "sha256-UG+y5n433dKKvbCP0FXWk5DYOGjigzOxUxOPwCClaas=";
+          stripRoot = false;
+        };
+
+        server = util.packageBinary {
+          name = "codedown-server";
+          binary = pkgs.fetchurl {
+            url = "https://github.com/codedownio/desktop/releases/download/v0.2.0.0/codedown-server-0.2.0.0-x86_64-linux";
+            sha256 = "0kyxvy9j1lz94p75ryb3kfnnnis0zwa0ii2xj9gyc6jfcslvpzqf";
+            # date = 2023-02-20T14:58:27-0800;
+          };
+        };
+
+        editor = with pkgs; runCommand "codedown-editor" { buildInputs = [makeWrapper]; } ''
+          mkdir -p $out/bin
+          makeWrapper "${server}/bin/codedown-server" "$out/bin/codedown-editor" \
+            --set CODEDOWN_EXECUTABLE codedown-editor
+        '';
+
+        runner = with pkgs; runCommand "codedown-runner" { buildInputs = [makeWrapper]; } ''
+          mkdir -p $out/bin
+          makeWrapper "${server}/bin/codedown-server" "$out/bin/codedown-runner" \
+            --set CODEDOWN_EXECUTABLE codedown-runner
         '';
 
         wrappedServer = with pkgs; runCommand "codedown-server-wrapped" { buildInputs = [makeWrapper]; } ''
@@ -130,7 +114,20 @@
               defaultPackageStoreEnv = pkgs.hello; # TODO
               inherit staticDocs;
 
-              inherit editorBinDir frontend runner templates;
+              inherit frontend runner templates;
+
+              editorBinDir = with pkgs; runCommand "codedown-editor-bin-dir" {} ''
+                mkdir -p $out
+                cp -ra ${pkgsStatic.busybox}/bin/* $out
+                # For some reason some busybox symlinks are "busybox" and some are "../bin/busybox".
+                # Fix up the latter type.
+                cd $out
+                for file in $(find . -type l); do
+                  ln -sf busybox "$file"
+                done
+
+                cp ${pkgsStatic.gnutar}/bin/tar $out/gnutar
+              '';
             };
           };
         };
