@@ -38,13 +38,13 @@
 
         frontend = pkgs.fetchzip {
           url = "https://github.com/codedownio/desktop/releases/download/v0.2.0.0/codedown-frontend-0.2.0.0.tar.gz";
-          sha256 = "sha256-dagOy3gSr6TZVSkpzfj5vSzQEX5j0eDwb1GeIo1Mk98=";
+          sha256 = "1bsw1yxjvji5q1ihh60sch6qzlp2gg2l8w6vp7y1qkbf6qksgzws";
           stripRoot = false;
         };
 
         staticDocs = pkgs.fetchzip {
           url = "https://github.com/codedownio/desktop/releases/download/v0.2.0.0/codedown-static-docs-0.2.0.0.tar.gz";
-          sha256 = "sha256-UG+y5n433dKKvbCP0FXWk5DYOGjigzOxUxOPwCClaas=";
+          sha256 = "1av9llhc13qkafqk70z2d0wdi44ksrax13xhpn5d5p9pgvkb4vsh";
           stripRoot = false;
         };
 
@@ -53,7 +53,6 @@
           binary = pkgs.fetchurl {
             url = "https://github.com/codedownio/desktop/releases/download/v0.2.0.0/codedown-server-0.2.0.0-x86_64-linux";
             sha256 = "0kyxvy9j1lz94p75ryb3kfnnnis0zwa0ii2xj9gyc6jfcslvpzqf";
-            # date = 2023-02-20T14:58:27-0800;
           };
         };
 
