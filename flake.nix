@@ -97,6 +97,7 @@
                 mkdir -p "$CONFIG_DIR/local_runners"
                 mkdir -p "$CONFIG_DIR/local_stores"
                 mkdir -p "$CONFIG_DIR/sandboxes"
+                mkdir -p "$CONFIG_DIR/imports"
 
                 ${wrappedServer}/bin/codedown-server -c "$CONFIG_FILE"
               '';

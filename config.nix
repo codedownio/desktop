@@ -53,6 +53,7 @@ lib.generators.toJSON {} {
     store = "default"; # Must be a key into the stores
   }];
   templates_dir = templates;
+  imports_dir = "CODEDOWN_ROOT/imports";
   database = { type = "sqlite"; path = "CODEDOWN_ROOT/db.sqlite"; };
   email_from = "admin@codedown.io";
   email_sender = { type = "null"; };
