@@ -130,6 +130,12 @@
               '';
             };
           };
+
+          # Trying to debug "unexpected end-of-file" error from nix run
+          test = pkgs.fetchurl {
+            url = "https://github.com/codedownio/desktop/releases/download/v0.2.0.0/codedown-screenshotter-0.1.0-x86_64-linux";
+            sha256 = "0lmnv9wnjqcl6hni3l740mdvbccgxaflsipdkcn27gqr46fw4dni";
+          };
         };
       });
 }
