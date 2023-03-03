@@ -27,7 +27,7 @@
             name = "codedown-screenshotter";
             binary = pkgs.fetchurl {
               url = "https://github.com/codedownio/desktop/releases/download/v0.2.0.0/codedown-screenshotter-0.1.0-x86_64-linux";
-              sha256 = "0lmnv9wnjqcl6hni3l740mdvbccgxaflsipdkcn27gqr46fw4dni";
+              sha256 = "1v4dyd4h2pvd7vd3h48yjigf868ny9cvwrqrjcyvk2j81l1s77w5";
             };
           };
         in with pkgs; runCommand "codedown-screenshotter-wrapped" { buildInputs = [makeWrapper]; } ''
@@ -38,7 +38,7 @@
 
         frontend = pkgs.fetchzip {
           url = "https://github.com/codedownio/desktop/releases/download/v0.2.0.0/codedown-frontend-0.2.0.0.tar.gz";
-          sha256 = "sha256-fQDDVldAorrL3UP2qbZFPBCitGKq2USJyGfVaHJDbCE=";
+          sha256 = "sha256-V94AerYz8gK2eb993uLLdPq/u5cbLOmx+hYsclgHXjw=";
           stripRoot = false;
         };
 
@@ -52,7 +52,7 @@
           name = "codedown-server";
           binary = pkgs.fetchurl {
             url = "https://github.com/codedownio/desktop/releases/download/v0.2.0.0/codedown-server-0.2.0.0-x86_64-linux";
-            sha256 = "0kyxvy9j1lz94p75ryb3kfnnnis0zwa0ii2xj9gyc6jfcslvpzqf";
+            sha256 = "0mkbbd608nh45i4cipnwc6cx80p2igbgv9bmfncnk212r2dw9cwi";
           };
         };
 
@@ -134,7 +134,7 @@
           # Trying to debug "unexpected end-of-file" error from nix run
           test = pkgs.fetchurl {
             url = "https://github.com/codedownio/desktop/releases/download/v0.2.0.0/codedown-screenshotter-0.1.0-x86_64-linux";
-            sha256 = "0lmnv9wnjqcl6hni3l740mdvbccgxaflsipdkcn27gqr46fw4dni";
+            sha256 = "1v4dyd4h2pvd7vd3h48yjigf868ny9cvwrqrjcyvk2j81l1s77w5";
           };
         };
       });
