@@ -95,6 +95,7 @@
 
                 # Make directories used by server
                 mkdir -p "$CONFIG_DIR/local_runners"
+                mkdir -p "$CONFIG_DIR/local_sandboxes"
                 mkdir -p "$CONFIG_DIR/local_stores"
                 mkdir -p "$CONFIG_DIR/sandboxes"
                 mkdir -p "$CONFIG_DIR/imports"
@@ -111,7 +112,10 @@
             name = "codedown-config.json";
             text = pkgs.callPackage ./config.nix {
               bootstrapNixpkgs = pkgs.path;
-              defaultPackageStoreEnv = pkgs.hello; # TODO
+              defaultPackageStoreEnv = pkgs.buildEnv {
+                name = "codedown-default-package-store-environment";
+                paths = with pkgs; [bashInteractive busybox tmux nixStatic fuse cacert nix-prefetch-git];
+              };
               inherit staticDocs;
 
               inherit frontend runner templates;
