@@ -56,12 +56,6 @@
           };
         };
 
-        editor = with pkgs; runCommand "codedown-editor" { buildInputs = [makeWrapper]; } ''
-          mkdir -p $out/bin
-          makeWrapper "${server}/bin/codedown-server" "$out/bin/codedown-editor" \
-            --set CODEDOWN_EXECUTABLE codedown-editor
-        '';
-
         runner = with pkgs; runCommand "codedown-runner" { buildInputs = [makeWrapper]; } ''
           mkdir -p $out/bin
           makeWrapper "${server}/bin/codedown-server" "$out/bin/codedown-runner" \
@@ -71,7 +65,7 @@
         wrappedServer = with pkgs; runCommand "codedown-server-wrapped" { buildInputs = [makeWrapper]; } ''
           mkdir -p $out/bin
           makeWrapper "${server}/bin/codedown-server" "$out/bin/codedown-server" \
-            --prefix PATH : ${lib.makeBinPath [ nodejs nixCustom tmux rclone pkgsStatic.busybox bubblewrap editor screenshotter ]}
+            --prefix PATH : ${lib.makeBinPath [ nodejs nixCustom tmux rclone pkgsStatic.busybox bubblewrap screenshotter ]}
         '';
 
       in rec {
@@ -120,18 +114,14 @@
 
               inherit frontend runner templates;
 
+              editorPath = "${server}/bin/codedown-server";
+
               editorBinDir = with pkgs; runCommand "codedown-editor-bin-dir" {} ''
                 mkdir -p $out/bin
                 cp -ra ${pkgsStatic.busybox}/bin/* $out/bin
                 cp ${pkgsStatic.gnutar}/bin/tar $out/bin/gnutar
               '';
             };
-          };
-
-          # Trying to debug "unexpected end-of-file" error from nix run
-          test = pkgs.fetchurl {
-            url = "https://github.com/codedownio/desktop/releases/download/v0.2.0.0/codedown-screenshotter-0.1.0-x86_64-linux";
-            sha256 = "1v4dyd4h2pvd7vd3h48yjigf868ny9cvwrqrjcyvk2j81l1s77w5";
           };
         };
       });
