@@ -38,7 +38,7 @@
 
         frontend = pkgs.fetchzip {
           url = "https://github.com/codedownio/desktop/releases/download/v0.2.0.0/codedown-frontend-0.2.0.0.tar.gz";
-          sha256 = "sha256-V94AerYz8gK2eb993uLLdPq/u5cbLOmx+hYsclgHXjw=";
+          sha256 = "12727xa1rr4rn1a5z0mrbcgqalf1k13nldkpn451845gk2cah7j0";
           stripRoot = false;
         };
 
@@ -52,7 +52,7 @@
           name = "codedown-server";
           binary = pkgs.fetchurl {
             url = "https://github.com/codedownio/desktop/releases/download/v0.2.0.0/codedown-server-0.2.0.0-x86_64-linux";
-            sha256 = "0mkbbd608nh45i4cipnwc6cx80p2igbgv9bmfncnk212r2dw9cwi";
+            sha256 = "0xqjm0c3gx241wyvnpxzlz5m1rwjcki6v7iiqdrcvb1pcjjyvjm9";
           };
         };
 
