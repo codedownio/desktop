@@ -121,16 +121,9 @@
               inherit frontend runner templates;
 
               editorBinDir = with pkgs; runCommand "codedown-editor-bin-dir" {} ''
-                mkdir -p $out
-                cp -ra ${pkgsStatic.busybox}/bin/* $out
-                # For some reason some busybox symlinks are "busybox" and some are "../bin/busybox".
-                # Fix up the latter type.
-                cd $out
-                for file in $(find . -type l); do
-                  ln -sf busybox "$file"
-                done
-
-                cp ${pkgsStatic.gnutar}/bin/tar $out/gnutar
+                mkdir -p $out/bin
+                cp -ra ${pkgsStatic.busybox}/bin/* $out/bin
+                cp ${pkgsStatic.gnutar}/bin/tar $out/bin/gnutar
               '';
             };
           };
