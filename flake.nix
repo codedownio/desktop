@@ -38,7 +38,7 @@
 
         frontend = pkgs.fetchzip {
           url = "https://github.com/codedownio/desktop/releases/download/v0.2.0.0/codedown-frontend-0.2.0.0.tar.gz";
-          sha256 = "12727xa1rr4rn1a5z0mrbcgqalf1k13nldkpn451845gk2cah7j0";
+          sha256 = "sha256-V94AerYz8gK2eb993uLLdPq/u5cbLOmx+hYsclgHXjw=";
           stripRoot = false;
         };
 
