@@ -108,7 +108,7 @@
               bootstrapNixpkgs = pkgs.path;
               defaultPackageStoreEnv = pkgs.buildEnv {
                 name = "codedown-default-package-store-environment";
-                paths = with pkgs; [bashInteractive busybox tmux nixStatic fuse cacert nix-prefetch-git];
+                paths = with pkgs; [bashInteractive busybox tmux nixCustom fuse cacert nix-prefetch-git];
               };
               inherit staticDocs;
 
