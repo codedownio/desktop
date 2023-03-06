@@ -13,7 +13,7 @@
 }:
 
 lib.generators.toJSON {} {
-  port = 8585;
+  port = 0;
   mode = { tag = "raw_electron"; };
   disable_auth = true;
   disable_landing_page = true;
