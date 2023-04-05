@@ -41,11 +41,11 @@
     "templates": {
       "flake": false,
       "locked": {
-        "lastModified": 1680398842,
-        "narHash": "sha256-L+rngmnEWZSa/l6YBO8QuOcgnI6FAoieMUjQHLF6vJ8=",
+        "lastModified": 1680716319,
+        "narHash": "sha256-BVHl8whIfjsVwpnnwQYl+oyvPZ6XLjvv2ZA+7cIjs+E=",
         "owner": "codedownio",
         "repo": "templates",
-        "rev": "b26bfbe2f792a506fd73cc8291b06cb3fdf97c73",
+        "rev": "eb26e92edfc2223efe706c8e714c24ffefca9d3a",
         "type": "github"
       },
       "original": {
