@@ -119,7 +119,8 @@
               editorBinDir = with pkgs; runCommand "codedown-editor-bin-dir" {} ''
                 mkdir -p $out/bin
                 cp -ra ${pkgsStatic.busybox}/bin/* $out/bin
-                ls -lh $out/bin
+
+                rm $out/bin/tar
                 cp ${pkgsStatic.gnutar}/bin/tar $out/bin/tar
               '';
             };
