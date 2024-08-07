@@ -38,7 +38,6 @@ lib.generators.toJSON {} {
       store_path = "/nix/store";
       read_only_binds = [
         ["/etc/hosts" "/etc/hosts"]
-        ["/etc/resolv.conf" "/etc/resolv.conf"]
       ];
     };
   }];
