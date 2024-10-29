@@ -2,7 +2,7 @@
   description = "CodeDown Desktop";
 
   inputs.flake-utils.url = "github:numtide/flake-utils";
-  inputs.nixpkgs.url = "github:NixOS/nixpkgs/release-22.11";
+  inputs.nixpkgs.url = "github:NixOS/nixpkgs/release-24.05";
 
   inputs.templates.url = "github:codedownio/templates";
   inputs.templates.flake = false;
@@ -17,8 +17,8 @@
         nixCustom = util.packageBinary {
           name = "nix";
           binary = pkgs.fetchurl {
-            url = "https://github.com/codedownio/desktop/releases/download/v0.2.0.0/nix-2.11.0-x86_64-linux";
-            sha256 = "1b8wly6fha8w4724xdvpas41kxg2c4gwrvp23mfh8bjjd80ycqaa";
+            url = "https://github.com/codedownio/desktop/releases/download/v1.4.0/nix-2.16.2-x86_64-linux";
+            hash = "sha256-xlxF970lz69xsh96BHC/qiZMOqnOXn/LR9FfwV8Gn2s=";
           };
         };
 
@@ -26,8 +26,8 @@
           screenshotterStatic = util.packageBinary {
             name = "codedown-screenshotter";
             binary = pkgs.fetchurl {
-              url = "https://github.com/codedownio/desktop/releases/download/v0.2.0.0/codedown-screenshotter-0.1.0-x86_64-linux";
-              sha256 = "1bxiyg3q8x3p0l0198s57h5b0rf9cgnfb2lw3lj9mzf8xzw6y5pl";
+              url = "https://github.com/codedownio/desktop/releases/download/v1.4.0/codedown-screenshotter-0.1.0-x86_64-linux";
+              sha256 = "0bxiyg3q8x3p0l0198s57h5b0rf9cgnfb2lw3lj9mzf8xzw6y5pl";
             };
           };
         in with pkgs; runCommand "codedown-screenshotter-wrapped" { buildInputs = [makeWrapper]; } ''
@@ -37,22 +37,22 @@
         '';
 
         frontend = pkgs.fetchzip {
-          url = "https://github.com/codedownio/desktop/releases/download/v0.2.0.0/codedown-frontend-0.2.0.0.tar.gz";
-          sha256 = "10nhhywxzqi7hm0qlw0l46pb9ld122dc7m4xzhqqcqvva7x353zb";
+          url = "https://github.com/codedownio/desktop/releases/download/v1.4.0/codedown-frontend-1.4.0.tar.gz";
+          hash = "sha256-UnyordwgSIhKlkfDuQhG/BhXHDk7GoXIhZxAC2uWFVY=";
           stripRoot = false;
         };
 
         staticDocs = pkgs.fetchzip {
-          url = "https://github.com/codedownio/desktop/releases/download/v0.2.0.0/codedown-static-docs-0.2.0.0.tar.gz";
-          sha256 = "1av9llhc13qkafqk70z2d0wdi44ksrax13xhpn5d5p9pgvkb4vsh";
+          url = "https://github.com/codedownio/desktop/releases/download/v1.4.0/codedown-static-docs-1.4.0.tar.gz";
+          hash = "sha256-+u2VTmOstTPh2d5vtwskGUc8sLacpgAt4acrl9lEYRw=";
           stripRoot = false;
         };
 
         server = util.packageBinary {
           name = "codedown-server";
           binary = pkgs.fetchurl {
-            url = "https://github.com/codedownio/desktop/releases/download/v0.2.0.0/codedown-server-0.2.0.0-x86_64-linux";
-            sha256 = "0g5n5lwcwzdh3rixklvm9ikz39am6wpr53ldqz2v40xznnawzviw";
+            url = "https://github.com/codedownio/desktop/releases/download/v1.4.0/codedown-server-1.4.0-x86_64-linux";
+            hash = "sha256-cBhTzI10BKFc1uVoGq+ejivQq+jPFbqYKOH0TIrzz9U=";
           };
         };
 
