@@ -27,7 +27,7 @@
             name = "codedown-screenshotter";
             binary = pkgs.fetchurl {
               url = "https://github.com/codedownio/desktop/releases/download/v1.4.0/codedown-screenshotter-0.1.0-x86_64-linux";
-              sha256 = "0bxiyg3q8x3p0l0198s57h5b0rf9cgnfb2lw3lj9mzf8xzw6y5pl";
+              hash = "sha256-cm3XDD9Ew7W7hb+URVwmH16VSO2XLx5U1rJk9c140Lo=";
             };
           };
         in with pkgs; runCommand "codedown-screenshotter-wrapped" { buildInputs = [makeWrapper]; } ''
