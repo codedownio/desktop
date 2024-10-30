@@ -36,6 +36,7 @@ lib.generators.toJSON {} {
       default_env = defaultPackageStoreEnv;
       nix_path = "/nix";
       store_path = "/nix/store";
+      gc_roots_dir = "CODEDOWN_ROOT/gc_roots";
       read_only_binds = [
         ["/etc/hosts" "/etc/hosts"]
       ];
