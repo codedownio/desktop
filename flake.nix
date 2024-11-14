@@ -115,8 +115,6 @@
 
               inherit frontend runner templates;
 
-              editorPath = "${server}/bin/codedown-server";
-
               editorBinDir = with pkgs; runCommand "codedown-editor-bin-dir" {} ''
                 mkdir -p $out/bin
                 cp -ra ${pkgsStatic.busybox}/bin/* $out/bin
