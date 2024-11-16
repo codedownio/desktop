@@ -1,5 +1,4 @@
 { lib
-, fetchurl
 
 , bootstrapNixpkgs
 , defaultPackageStoreEnv
@@ -8,7 +7,6 @@
 , editorBinDir
 , frontend
 , templates
-, runner
 }:
 
 lib.generators.toJSON {} {
@@ -47,7 +45,6 @@ lib.generators.toJSON {} {
     description = "Local runner";
     config = {
       tag = "process";
-      runner_executable = "${runner}/bin/codedown-runner";
       # log_dir = "/tmp";
     };
     store = "default"; # Must be a key into the stores

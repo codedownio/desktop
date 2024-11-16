@@ -56,12 +56,6 @@
           };
         };
 
-        runner = with pkgs; runCommand "codedown-runner" { buildInputs = [makeWrapper]; } ''
-          mkdir -p $out/bin
-          makeWrapper "${server}/bin/codedown-server" "$out/bin/codedown-runner" \
-            --set CODEDOWN_EXECUTABLE codedown-runner
-        '';
-
         wrappedServer = with pkgs; runCommand "codedown-server-wrapped" { buildInputs = [makeWrapper]; } ''
           mkdir -p $out/bin
           makeWrapper "${server}/bin/codedown-server" "$out/bin/codedown-server" \
@@ -113,7 +107,7 @@
               };
               inherit staticDocs;
 
-              inherit frontend runner templates;
+              inherit frontend templates;
 
               editorBinDir = with pkgs; runCommand "codedown-editor-bin-dir" {} ''
                 mkdir -p $out/bin
