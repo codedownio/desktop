@@ -108,14 +108,6 @@
               inherit staticDocs;
 
               inherit frontend templates;
-
-              editorBinDir = with pkgs; runCommand "codedown-editor-bin-dir" {} ''
-                mkdir -p $out/bin
-                cp -ra ${pkgsStatic.busybox}/bin/* $out/bin
-
-                rm $out/bin/tar
-                cp ${pkgsStatic.gnutar}/bin/tar $out/bin/tar
-              '';
             };
           };
         };
