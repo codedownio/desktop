@@ -10,7 +10,7 @@
 
 lib.generators.toJSON {} {
   port = 0;
-  mode = { tag = "raw_electron"; };
+  mode = { tag = "raw"; };
   disable_auth = true;
   disable_landing_page = true;
   sandbox_store_providers = [{
