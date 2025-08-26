@@ -12,7 +12,6 @@ lib.generators.toJSON {} {
   port = 0;
   mode = { tag = "raw"; };
   disable_auth = true;
-  disable_landing_page = true;
   sandbox_store_providers = [{
     name = "host-local";
     display_name = "Host local sandbox store provider";
@@ -49,15 +48,10 @@ lib.generators.toJSON {} {
     store = "default"; # Must be a key into the stores
   }];
   templates_dir = templates;
-  imports_root = "CODEDOWN_ROOT/imports";
+  server_root = "CODEDOWN_ROOT/server_root";
   database = { type = "sqlite"; path = "CODEDOWN_ROOT/db.sqlite"; };
-  email_from = "admin@codedown.io";
-  email_sender = { type = "null"; };
   app_dir = "${frontend}";
   static_docs_dir = staticDocs;
-  sandboxes_root = "CODEDOWN_ROOT/sandboxes";
-  package_stores_root = "CODEDOWN_ROOT/local_stores";
-  runners_root = "CODEDOWN_ROOT/local_runners";
   session_token_signing_key = "";
   startup_jobs = [
     { tag = "sync_templates"; }
