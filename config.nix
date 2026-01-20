@@ -2,7 +2,6 @@
 
 , bootstrapNixpkgs
 , defaultPackageStoreEnv
-, staticDocs
 
 , frontend
 , templates
@@ -51,7 +50,6 @@ lib.generators.toJSON {} {
   server_root = "CODEDOWN_ROOT/server_root";
   database = { type = "sqlite"; path = "CODEDOWN_ROOT/db.sqlite"; };
   app_dir = "${frontend}";
-  static_docs_dir = staticDocs;
   session_token_signing_key = "";
   startup_jobs = [
     { tag = "sync_templates"; }

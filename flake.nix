@@ -42,12 +42,6 @@
           stripRoot = false;
         };
 
-        staticDocs = pkgs.fetchzip {
-          url = "https://github.com/codedownio/desktop/releases/download/v1.4.0/codedown-static-docs-1.4.0.tar.gz";
-          hash = "sha256-+u2VTmOstTPh2d5vtwskGUc8sLacpgAt4acrl9lEYRw=";
-          stripRoot = false;
-        };
-
         server = util.packageBinary {
           name = "codedown-server";
           binary = pkgs.fetchurl {
@@ -105,7 +99,6 @@
                 name = "codedown-default-package-store-environment";
                 paths = with pkgs; [bashInteractive busybox tmux nixCustom fuse cacert nix-prefetch-git];
               };
-              inherit staticDocs;
 
               inherit frontend templates;
             };
