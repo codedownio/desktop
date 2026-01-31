@@ -46,13 +46,16 @@ lib.generators.toJSON {} {
     };
     store = "default"; # Must be a key into the stores
   }];
-  templates_dir = templates;
   server_root = "CODEDOWN_ROOT/server_root";
   database = { type = "sqlite"; path = "CODEDOWN_ROOT/db.sqlite"; };
   app_dir = "${frontend}";
   session_token_signing_key = "";
   startup_jobs = [
-    { tag = "sync_templates"; }
+    {
+      tag = "sync_templates";
+      to_namespace = "templates";
+      directory = templates;
+    }
     { tag = "prune_missing_runners"; }
   ];
 }
