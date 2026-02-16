@@ -1,7 +1,10 @@
 { lib
 
 , bootstrapNixpkgs
-, defaultPackageStoreEnv
+, nixBinDir
+, certBundle
+, termInfo
+, runnerBinDir
 
 , frontend
 , templates
@@ -11,6 +14,7 @@ lib.generators.toJSON {} {
   port = 0;
   mode = { tag = "raw"; };
   disable_auth = true;
+  index_store_configs = [];
   sandbox_store_providers = [{
     name = "host-local";
     display_name = "Host local sandbox store provider";
@@ -26,11 +30,13 @@ lib.generators.toJSON {} {
     description = "Default package store config";
     config = {
       tag = "preexisting";
-      bootstrap_nixpkgs = bootstrapNixpkgs;
-      default_env = defaultPackageStoreEnv;
       nix_path = "/nix";
-      store_path = "/nix/store";
-      gc_roots_dir = "CODEDOWN_ROOT/gc_roots";
+      nix_store_path = "/nix/store";
+      nix_bin_dir = nixBinDir;
+      cert_bundle = certBundle;
+      term_info = termInfo;
+      runner_bin_dir = runnerBinDir;
+      bootstrap_nixpkgs = { path = bootstrapNixpkgs; };
       read_only_binds = [
         ["/etc/hosts" "/etc/hosts"]
       ];
@@ -42,13 +48,12 @@ lib.generators.toJSON {} {
     description = "Local runner";
     config = {
       tag = "process";
-      # log_dir = "/tmp";
     };
-    store = "default"; # Must be a key into the stores
+    store = "default";
   }];
   server_root = "CODEDOWN_ROOT/server_root";
   database = { type = "sqlite"; path = "CODEDOWN_ROOT/db.sqlite"; };
-  app_dir = "${frontend}";
+  app_dir = { tag = "external"; contents = "${frontend}"; };
   session_token_signing_key = "";
   startup_jobs = [
     {

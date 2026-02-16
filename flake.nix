@@ -8,27 +8,64 @@
   inputs.templates.flake = false;
 
   outputs = { self, flake-utils, nixpkgs, templates }:
-    flake-utils.lib.eachSystem [ "x86_64-linux" ] (system:
+    flake-utils.lib.eachSystem [ "x86_64-linux" "aarch64-linux" ] (system:
       let
         pkgs = import nixpkgs { inherit system; };
 
         util = pkgs.callPackage ./util.nix {};
 
+        nixBinaries = {
+          x86_64-linux = {
+            url = "https://github.com/codedownio/desktop/releases/download/v1.7.1/nix-2.32.4-x86_64-linux";
+            hash = "sha256-dD3tVE25Xf9vRqYyUJFLgdIkZVGnaMMPgpbxIvhmyoM=";
+          };
+          aarch64-linux = {
+            url = "https://github.com/codedownio/desktop/releases/download/v1.7.1/nix-2.32.4-aarch64-linux";
+            hash = "sha256-KuRcDsI3hPuQYMhVqmPld1cxgUyA1/B98+XMKTZtbwc=";
+          };
+        };
+
+        serverTarballs = {
+          x86_64-linux = {
+            url = "https://github.com/codedownio/desktop/releases/download/v1.7.1/codedown-server-1.7.1-x86_64-linux.tar.gz";
+            hash = "sha256-bL/IW4HZucr/Sclz6ogEGctAdu03ZXjv9WIIN7Ch37Q=";
+            stripRoot = true;
+            binaryPath = "codedown-server";
+          };
+          aarch64-linux = {
+            url = "https://github.com/codedownio/desktop/releases/download/v1.7.1/codedown-server-1.7.1-aarch64-linux.tar.gz";
+            hash = "sha256-GqVyM6z137I7QpLtWuLwsq5GsTgR5XXnkKX1Pi1dBiY=";
+            stripRoot = false;
+            binaryPath = "bin/codedown-server";
+          };
+        };
+
+        screenshotterBinaries = {
+          x86_64-linux = {
+            url = "https://github.com/codedownio/desktop/releases/download/v1.7.1/codedown-screenshotter-0.1.1-x86_64-linux";
+            hash = "sha256-hWfRjeUwLlmN5LvL1qQTp9zrOELgh6EJ6vDNKjb6Mjw=";
+          };
+          aarch64-linux = {
+            url = "https://github.com/codedownio/desktop/releases/download/v1.7.1/codedown-screenshotter-0.1.1-aarch64-linux";
+            hash = "sha256-lpd4rpURBeCfaAtbpLzSBWwTcplgKqkR5XoGbUd1vmI=";
+          };
+        };
+
         nixCustom = util.packageBinary {
           name = "nix";
-          binary = pkgs.fetchurl {
-            url = "https://github.com/codedownio/desktop/releases/download/v1.4.0/nix-2.16.2-x86_64-linux";
-            hash = "sha256-xlxF970lz69xsh96BHC/qiZMOqnOXn/LR9FfwV8Gn2s=";
-          };
+          binary = pkgs.fetchurl nixBinaries.${system};
+        };
+
+        server = pkgs.fetchzip {
+          url = serverTarballs.${system}.url;
+          hash = serverTarballs.${system}.hash;
+          stripRoot = serverTarballs.${system}.stripRoot;
         };
 
         screenshotter = let
           screenshotterStatic = util.packageBinary {
             name = "codedown-screenshotter";
-            binary = pkgs.fetchurl {
-              url = "https://github.com/codedownio/desktop/releases/download/v1.4.0/codedown-screenshotter-0.1.0-x86_64-linux";
-              hash = "sha256-cm3XDD9Ew7W7hb+URVwmH16VSO2XLx5U1rJk9c140Lo=";
-            };
+            binary = pkgs.fetchurl screenshotterBinaries.${system};
           };
         in with pkgs; runCommand "codedown-screenshotter-wrapped" { buildInputs = [makeWrapper]; } ''
           mkdir -p $out/bin
@@ -37,22 +74,14 @@
         '';
 
         frontend = pkgs.fetchzip {
-          url = "https://github.com/codedownio/desktop/releases/download/v1.4.0/codedown-frontend-1.4.0.tar.gz";
-          hash = "sha256-UnyordwgSIhKlkfDuQhG/BhXHDk7GoXIhZxAC2uWFVY=";
+          url = "https://github.com/codedownio/desktop/releases/download/v1.7.1/codedown-frontend-1.7.1.tar.gz";
+          hash = "sha256-OSKfmKJPVSa9Lis1314ms7HXd3ba+q6zvbTX9DygCnU=";
           stripRoot = false;
-        };
-
-        server = util.packageBinary {
-          name = "codedown-server";
-          binary = pkgs.fetchurl {
-            url = "https://github.com/codedownio/desktop/releases/download/v1.4.0/codedown-server-1.4.0-x86_64-linux";
-            hash = "sha256-cBhTzI10BKFc1uVoGq+ejivQq+jPFbqYKOH0TIrzz9U=";
-          };
         };
 
         wrappedServer = with pkgs; runCommand "codedown-server-wrapped" { buildInputs = [makeWrapper]; } ''
           mkdir -p $out/bin
-          makeWrapper "${server}/bin/codedown-server" "$out/bin/codedown-server" \
+          makeWrapper "${server}/${serverTarballs.${system}.binaryPath}" "$out/bin/codedown-server" \
             --prefix PATH : ${lib.makeBinPath [ nodejs nixCustom tmux rclone pkgsStatic.busybox bubblewrap slirp4netns screenshotter ]}
         '';
 
@@ -91,14 +120,19 @@
         };
 
         packages = {
-          default = pkgs.writeTextFile {
+          default = let
+            runnerBinDir = pkgs.buildEnv {
+              name = "codedown-runner-bin-dir";
+              paths = with pkgs; [bashInteractive busybox tmux nixCustom fuse cacert nix-prefetch-git];
+            };
+          in pkgs.writeTextFile {
             name = "codedown-config.json";
             text = pkgs.callPackage ./config.nix {
               bootstrapNixpkgs = pkgs.path;
-              defaultPackageStoreEnv = pkgs.buildEnv {
-                name = "codedown-default-package-store-environment";
-                paths = with pkgs; [bashInteractive busybox tmux nixCustom fuse cacert nix-prefetch-git];
-              };
+              nixBinDir = "${nixCustom}/bin";
+              certBundle = "${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt";
+              termInfo = "${pkgs.ncurses}/share/terminfo";
+              runnerBinDir = "${runnerBinDir}/bin";
 
               inherit frontend templates;
             };
