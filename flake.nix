@@ -85,47 +85,13 @@
             --prefix PATH : ${lib.makeBinPath [ nodejs nixCustom tmux rclone pkgsStatic.busybox bubblewrap slirp4netns screenshotter ]}
         '';
 
-      in rec {
-        apps = {
-          default = {
-            type = "app";
-            program = let
-              script = with pkgs; writeShellScript "codedown-server.sh" ''
-                CONFIG_DIR=''${XDG_CONFIG_HOME:-$HOME/.config}/codedown
-
-                if [ ! -d "CONFIG_DIR" ]; then
-                  echo "Creating $CONFIG_DIR"
-                  mkdir -p "$CONFIG_DIR"
-                fi
-
-                CONFIG_FILE="$CONFIG_DIR/config.json"
-                if [ ! -f "CONFIG_FILE" ]; then
-                  echo "Installing initial configuration to $CONFIG_FILE"
-                  ${pkgs.gnused}/bin/sed "s|CODEDOWN_ROOT|$CONFIG_DIR|g" "${packages.default}" > "$CONFIG_FILE"
-                fi
-
-                # Make directories used by server
-                mkdir -p "$CONFIG_DIR/gc_roots"
-                mkdir -p "$CONFIG_DIR/imports"
-                mkdir -p "$CONFIG_DIR/local_runners"
-                mkdir -p "$CONFIG_DIR/local_sandboxes"
-                mkdir -p "$CONFIG_DIR/local_stores"
-                mkdir -p "$CONFIG_DIR/sandboxes"
-
-                ${wrappedServer}/bin/codedown-server -c "$CONFIG_FILE" "$@"
-              '';
-            in
-              "${script}";
+        config = let
+          runnerBinDir = pkgs.buildEnv {
+            name = "codedown-runner-bin-dir";
+            paths = with pkgs; [bashInteractive busybox tmux nixCustom fuse cacert nix-prefetch-git];
           };
-        };
-
-        packages = {
-          default = let
-            runnerBinDir = pkgs.buildEnv {
-              name = "codedown-runner-bin-dir";
-              paths = with pkgs; [bashInteractive busybox tmux nixCustom fuse cacert nix-prefetch-git];
-            };
-          in pkgs.writeTextFile {
+        in
+          pkgs.writeTextFile {
             name = "codedown-config.json";
             text = pkgs.callPackage ./config.nix {
               bootstrapNixpkgs = pkgs.path;
@@ -137,6 +103,45 @@
               inherit frontend templates;
             };
           };
-        };
-      });
+
+        runnerScript = with pkgs; writeShellScript "codedown-server.sh" ''
+          CONFIG_DIR=''${XDG_CONFIG_HOME:-$HOME/.config}/codedown
+
+          if [ ! -d "CONFIG_DIR" ]; then
+            echo "Creating $CONFIG_DIR"
+            mkdir -p "$CONFIG_DIR"
+          fi
+
+          CONFIG_FILE="$CONFIG_DIR/config.json"
+          if [ ! -f "CONFIG_FILE" ]; then
+            echo "Installing initial configuration to $CONFIG_FILE"
+            ${pkgs.gnused}/bin/sed "s|CODEDOWN_ROOT|$CONFIG_DIR|g" "${config}" > "$CONFIG_FILE"
+          fi
+
+          # Make directories used by server
+          mkdir -p "$CONFIG_DIR/gc_roots"
+          mkdir -p "$CONFIG_DIR/imports"
+          mkdir -p "$CONFIG_DIR/local_runners"
+          mkdir -p "$CONFIG_DIR/local_sandboxes"
+          mkdir -p "$CONFIG_DIR/local_stores"
+          mkdir -p "$CONFIG_DIR/sandboxes"
+
+          ${wrappedServer}/bin/codedown-server -c "$CONFIG_FILE" "$@"
+        '';
+
+      in
+        {
+          apps = {
+            default = {
+              type = "app";
+              program = "${runnerScript}";
+            };
+          };
+
+          packages = {
+            inherit config runnerScript;
+            server = wrappedServer;
+            default = runnerScript;
+          };
+        });
 }
