@@ -102,12 +102,8 @@
           fi
 
           # Make directories used by server
-          mkdir -p "$CONFIG_DIR/gc_roots"
-          mkdir -p "$CONFIG_DIR/imports"
-          mkdir -p "$CONFIG_DIR/local_runners"
           mkdir -p "$CONFIG_DIR/local_sandboxes"
-          mkdir -p "$CONFIG_DIR/local_stores"
-          mkdir -p "$CONFIG_DIR/sandboxes"
+          mkdir -p "$CONFIG_DIR/server_root"
 
           ${wrappedServer}/bin/codedown-server -c "$CONFIG_FILE" "$@"
         '';
