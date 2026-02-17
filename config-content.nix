@@ -7,12 +7,13 @@
 , runnerBinDir
 
 , rootDir ? "CODEDOWN_ROOT"
+, optionOverrides ? {}
 
 , frontend
 , templates
 }:
 
-lib.generators.toJSON {} {
+lib.generators.toJSON {} ({
   port = 0;
   mode = { tag = "raw"; };
   disable_auth = true;
@@ -65,4 +66,4 @@ lib.generators.toJSON {} {
     }
     { tag = "prune_missing_runners"; }
   ];
-}
+} // optionOverrides)
