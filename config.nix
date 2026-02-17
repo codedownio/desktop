@@ -6,6 +6,8 @@
 , termInfo
 , runnerBinDir
 
+, rootDir ? "CODEDOWN_ROOT"
+
 , frontend
 , templates
 }:
@@ -21,7 +23,7 @@ lib.generators.toJSON {} {
     description = "Store provider on the Docker host";
     provider = {
       tag = "local";
-      path = "CODEDOWN_ROOT/local_sandboxes";
+      path = "${rootDir}/local_sandboxes";
     };
   }];
   package_store_configs = [{
@@ -51,8 +53,8 @@ lib.generators.toJSON {} {
     };
     store = "default";
   }];
-  server_root = "CODEDOWN_ROOT/server_root";
-  database = { type = "sqlite"; path = "CODEDOWN_ROOT/db.sqlite"; };
+  server_root = "${rootDir}/server_root";
+  database = { type = "sqlite"; path = "${rootDir}/db.sqlite"; };
   app_dir = { tag = "external"; contents = "${frontend}"; };
   session_token_signing_key = "";
   startup_jobs = [
