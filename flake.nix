@@ -107,13 +107,13 @@
         runnerScript = with pkgs; writeShellScript "codedown-server.sh" ''
           CONFIG_DIR=''${XDG_CONFIG_HOME:-$HOME/.config}/codedown
 
-          if [ ! -d "CONFIG_DIR" ]; then
+          if [ ! -d "$CONFIG_DIR" ]; then
             echo "Creating $CONFIG_DIR"
             mkdir -p "$CONFIG_DIR"
           fi
 
           CONFIG_FILE="$CONFIG_DIR/config.json"
-          if [ ! -f "CONFIG_FILE" ]; then
+          if [ ! -f "$CONFIG_FILE" ]; then
             echo "Installing initial configuration to $CONFIG_FILE"
             ${pkgs.gnused}/bin/sed "s|CODEDOWN_ROOT|$CONFIG_DIR|g" "${config}" > "$CONFIG_FILE"
           fi
