@@ -85,24 +85,7 @@
             --prefix PATH : ${lib.makeBinPath [ nodejs nixCustom tmux rclone pkgsStatic.busybox bubblewrap slirp4netns screenshotter ]}
         '';
 
-        config = let
-          runnerBinDir = pkgs.buildEnv {
-            name = "codedown-runner-bin-dir";
-            paths = with pkgs; [bashInteractive busybox tmux nixCustom fuse cacert nix-prefetch-git];
-          };
-        in
-          pkgs.writeTextFile {
-            name = "codedown-config.json";
-            text = pkgs.callPackage ./config.nix {
-              bootstrapNixpkgs = pkgs.path;
-              nixBinDir = "${nixCustom}/bin";
-              certBundle = "${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt";
-              termInfo = "${pkgs.ncurses}/share/terminfo";
-              runnerBinDir = "${runnerBinDir}/bin";
-
-              inherit frontend templates;
-            };
-          };
+        config = pkgs.callPackage ./config.nix { inherit frontend templates nixCustom; };
 
         runnerScript = with pkgs; writeShellScript "codedown-server.sh" ''
           CONFIG_DIR=''${XDG_CONFIG_HOME:-$HOME/.config}/codedown
