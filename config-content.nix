@@ -55,8 +55,14 @@ lib.generators.toJSON {} ({
     store = "default";
   }];
   server_root = "${rootDir}/server_root";
-  database = { type = "sqlite"; path = "${rootDir}/db.sqlite"; };
-  app_dir = { tag = "external"; contents = "${frontend}"; };
+  database = {
+    type = "sqlite";
+    path = "${rootDir}/db.sqlite";
+  };
+  app_dir = {
+    tag = "built_in";
+    contents = "${frontend}";
+  };
   session_token_signing_key = "";
   startup_jobs = [
     {
