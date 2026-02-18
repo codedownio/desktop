@@ -17,7 +17,6 @@ lib.generators.toJSON {} ({
   port = 0;
   mode = { tag = "raw"; };
   disable_auth = true;
-  index_store_configs = [];
   sandbox_store_providers = [{
     name = "host-local";
     display_name = "Host local sandbox store provider";
@@ -53,6 +52,15 @@ lib.generators.toJSON {} ({
       tag = "process";
     };
     store = "default";
+  }];
+  index_store_configs = [{
+    config = {
+      tag = "sqlite";
+      dir = "${rootDir}/index_stores_root";
+    };
+    name = "Sqlite indexer";
+    display_name = "Sqlite indexer";
+    description = "Indexer using Sqlite";
   }];
   server_root = "${rootDir}/server_root";
   database = {
