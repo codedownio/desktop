@@ -12,48 +12,47 @@
       let
         pkgs = import nixpkgs { inherit system; };
 
-        util = pkgs.callPackage ./util.nix {};
-
-        nixBinaries = {
+        nixTarballs = {
           x86_64-linux = {
-            url = "https://github.com/codedownio/desktop/releases/download/v1.7.1/nix-2.32.4-x86_64-linux";
-            hash = "sha256-dD3tVE25Xf9vRqYyUJFLgdIkZVGnaMMPgpbxIvhmyoM=";
+            url = "https://github.com/codedownio/desktop/releases/download/v1.7.2/nix-static-2.32.4-x86_64-linux.tar.gz";
+            hash = "sha256-Wh+6GqkmDbRel+Tgzia7eJlIy8xjWKaLRINwuSYvxpo=";
           };
           aarch64-linux = {
-            url = "https://github.com/codedownio/desktop/releases/download/v1.7.1/nix-2.32.4-aarch64-linux";
-            hash = "sha256-KuRcDsI3hPuQYMhVqmPld1cxgUyA1/B98+XMKTZtbwc=";
+            url = "https://github.com/codedownio/desktop/releases/download/v1.7.2/nix-static-2.32.4-aarch64-linux.tar.gz";
+            hash = "sha256-qvwDG5lyd1qJw2ADNGhFVS+f6h4d3AKpB82vdUT0oH0=";
           };
         };
 
         serverTarballs = {
           x86_64-linux = {
-            url = "https://github.com/codedownio/desktop/releases/download/v1.7.1/codedown-server-1.7.1-x86_64-linux.tar.gz";
-            hash = "sha256-bL/IW4HZucr/Sclz6ogEGctAdu03ZXjv9WIIN7Ch37Q=";
+            url = "https://github.com/codedownio/desktop/releases/download/v1.7.2/codedown-server-1.7.2-x86_64-linux.tar.gz";
+            hash = "sha256-+TKkQijk9iX84B2A8m7OXOzQN5BalxaY1F7jrRsJ7GQ=";
             stripRoot = true;
             binaryPath = "codedown-server";
           };
           aarch64-linux = {
-            url = "https://github.com/codedownio/desktop/releases/download/v1.7.1/codedown-server-1.7.1-aarch64-linux.tar.gz";
-            hash = "sha256-GqVyM6z137I7QpLtWuLwsq5GsTgR5XXnkKX1Pi1dBiY=";
+            url = "https://github.com/codedownio/desktop/releases/download/v1.7.2/codedown-server-1.7.2-aarch64-linux.tar.gz";
+            hash = "sha256-0xXJleuTXFXHonNBL7ytos8ny57Iha1LmJRriLUWho8=";
             stripRoot = false;
             binaryPath = "bin/codedown-server";
           };
         };
 
-        screenshotterBinaries = {
+        screenshotterTarballs = {
           x86_64-linux = {
-            url = "https://github.com/codedownio/desktop/releases/download/v1.7.1/codedown-screenshotter-0.1.1-x86_64-linux";
-            hash = "sha256-hWfRjeUwLlmN5LvL1qQTp9zrOELgh6EJ6vDNKjb6Mjw=";
+            url = "https://github.com/codedownio/desktop/releases/download/v1.7.2/codedown-screenshotter-0.1.1-x86_64-linux.tar.gz";
+            hash = "sha256-MJrYoEjcW5pAsiUV5Zmq6K8M4hZK5t3ETkYHCmvl/w0=";
           };
           aarch64-linux = {
-            url = "https://github.com/codedownio/desktop/releases/download/v1.7.1/codedown-screenshotter-0.1.1-aarch64-linux";
-            hash = "sha256-lpd4rpURBeCfaAtbpLzSBWwTcplgKqkR5XoGbUd1vmI=";
+            url = "https://github.com/codedownio/desktop/releases/download/v1.7.2/codedown-screenshotter-0.1.1-aarch64-linux.tar.gz";
+            hash = "sha256-AdQwie5JWqaHUHDW46uG39nRmFF3WlwyLoDDNRp2R+Q=";
           };
         };
 
-        nixCustom = util.packageBinary {
-          name = "nix";
-          binary = pkgs.fetchurl nixBinaries.${system};
+        nixCustom = pkgs.fetchzip {
+          url = nixTarballs.${system}.url;
+          hash = nixTarballs.${system}.hash;
+          stripRoot = false;
         };
 
         server = pkgs.fetchzip {
@@ -63,19 +62,20 @@
         };
 
         screenshotter = let
-          screenshotterStatic = util.packageBinary {
-            name = "codedown-screenshotter";
-            binary = pkgs.fetchurl screenshotterBinaries.${system};
+          screenshotterUnpacked = pkgs.fetchzip {
+            url = screenshotterTarballs.${system}.url;
+            hash = screenshotterTarballs.${system}.hash;
+            stripRoot = false;
           };
         in with pkgs; runCommand "codedown-screenshotter-wrapped" { buildInputs = [makeWrapper]; } ''
           mkdir -p $out/bin
-          makeWrapper ${screenshotterStatic}/bin/codedown-screenshotter "$out/bin/codedown-screenshotter" \
+          makeWrapper ${screenshotterUnpacked}/bin/codedown-screenshotter "$out/bin/codedown-screenshotter" \
             --add-flags "--chrome-path ${pkgs.chromium}/bin/chromium"
         '';
 
         frontend = pkgs.fetchzip {
-          url = "https://github.com/codedownio/desktop/releases/download/v1.7.1/codedown-frontend-1.7.1.tar.gz";
-          hash = "sha256-OSKfmKJPVSa9Lis1314ms7HXd3ba+q6zvbTX9DygCnU=";
+          url = "https://github.com/codedownio/desktop/releases/download/v1.7.2/codedown-frontend-1.7.2.tar.gz";
+          hash = "sha256-YRQ5bU9aIe5HP4MBxWFIPqR3wfdE+4GObDp8xrgZ5kw=";
           stripRoot = false;
         };
 
