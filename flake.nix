@@ -19,7 +19,7 @@
           };
           aarch64-linux = {
             url = "https://github.com/codedownio/desktop/releases/download/v1.7.2/nix-static-2.32.4-aarch64-linux.tar.gz";
-            hash = "sha256-qvwDG5lyd1qJw2ADNGhFVS+f6h4d3AKpB82vdUT0oH0=";
+            hash = "sha256-DFje+EYeYMlx5IKCAnspHjLikuhjFzYljSo6Ac1W9SI=";
           };
         };
 
