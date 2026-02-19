@@ -14,25 +14,25 @@
 
         nixTarballs = {
           x86_64-linux = {
-            url = "https://github.com/codedownio/desktop/releases/download/v1.7.2/nix-static-2.32.4-x86_64-linux.tar.gz";
+            url = "https://github.com/codedownio/desktop/releases/download/v1.7.3/nix-static-2.32.4-x86_64-linux.tar.gz";
             hash = "sha256-Wh+6GqkmDbRel+Tgzia7eJlIy8xjWKaLRINwuSYvxpo=";
           };
           aarch64-linux = {
-            url = "https://github.com/codedownio/desktop/releases/download/v1.7.2/nix-static-2.32.4-aarch64-linux.tar.gz";
+            url = "https://github.com/codedownio/desktop/releases/download/v1.7.3/nix-static-2.32.4-aarch64-linux.tar.gz";
             hash = "sha256-DFje+EYeYMlx5IKCAnspHjLikuhjFzYljSo6Ac1W9SI=";
           };
         };
 
         serverTarballs = {
           x86_64-linux = {
-            url = "https://github.com/codedownio/desktop/releases/download/v1.7.2/codedown-server-1.7.2-x86_64-linux.tar.gz";
-            hash = "sha256-+TKkQijk9iX84B2A8m7OXOzQN5BalxaY1F7jrRsJ7GQ=";
+            url = "https://github.com/codedownio/desktop/releases/download/v1.7.3/codedown-server-1.7.3-x86_64-linux.tar.gz";
+            hash = "sha256-IVR19n5i8EmIXTHaF6o+1psH8N/AeT8nAHZjcccbtXw=";
             stripRoot = true;
             binaryPath = "codedown-server";
           };
           aarch64-linux = {
-            url = "https://github.com/codedownio/desktop/releases/download/v1.7.2/codedown-server-1.7.2-aarch64-linux.tar.gz";
-            hash = "sha256-0xXJleuTXFXHonNBL7ytos8ny57Iha1LmJRriLUWho8=";
+            url = "https://github.com/codedownio/desktop/releases/download/v1.7.3/codedown-server-1.7.3-aarch64-linux.tar.gz";
+            hash = "sha256-OksIm/IpVajLLeAExw1R8/jrbLol/RfQMhZhuG1NLbY=";
             stripRoot = false;
             binaryPath = "bin/codedown-server";
           };
@@ -40,12 +40,23 @@
 
         screenshotterTarballs = {
           x86_64-linux = {
-            url = "https://github.com/codedownio/desktop/releases/download/v1.7.2/codedown-screenshotter-0.1.1-x86_64-linux.tar.gz";
+            url = "https://github.com/codedownio/desktop/releases/download/v1.7.3/codedown-screenshotter-0.1.1-x86_64-linux.tar.gz";
             hash = "sha256-MJrYoEjcW5pAsiUV5Zmq6K8M4hZK5t3ETkYHCmvl/w0=";
           };
           aarch64-linux = {
-            url = "https://github.com/codedownio/desktop/releases/download/v1.7.2/codedown-screenshotter-0.1.1-aarch64-linux.tar.gz";
-            hash = "sha256-j/IspnxxnzWBKj4nkg4NU1tqKQ5JMo47IqVdEPWLBbM=";
+            url = "https://github.com/codedownio/desktop/releases/download/v1.7.3/codedown-screenshotter-0.1.1-aarch64-linux.tar.gz";
+            hash = "sha256-AdQwie5JWqaHUHDW46uG39nRmFF3WlwyLoDDNRp2R+Q=";
+          };
+        };
+
+        runnerBinDirTarballs = {
+          x86_64-linux = {
+            url = "https://github.com/codedownio/desktop/releases/download/v1.7.3/runner-bin-dir-1.7.3-x86_64-linux.tar.gz";
+            hash = "sha256-oP0KhsNq/5wA0lP4BKv4eFVldhiV/Rj5At5IKP362YQ=";
+          };
+          aarch64-linux = {
+            url = "https://github.com/codedownio/desktop/releases/download/v1.7.3/runner-bin-dir-1.7.3-aarch64-linux.tar.gz";
+            hash = "sha256-XrbzYMdI+aOYelJXX7fdxsGPY5t4FGTqOjZ42NPD3ls=";
           };
         };
 
@@ -74,8 +85,14 @@
         '';
 
         frontend = pkgs.fetchzip {
-          url = "https://github.com/codedownio/desktop/releases/download/v1.7.2/codedown-frontend-1.7.2.tar.gz";
-          hash = "sha256-YRQ5bU9aIe5HP4MBxWFIPqR3wfdE+4GObDp8xrgZ5kw=";
+          url = "https://github.com/codedownio/desktop/releases/download/v1.7.3/codedown-frontend-1.7.3.tar.gz";
+          hash = "sha256-WsKT7LOb9wpd9R1H24vfbdX06jQDfXjx8wiB2tiZdl4=";
+          stripRoot = false;
+        };
+
+        runnerBinDir = pkgs.fetchzip {
+          url = runnerBinDirTarballs.${system}.url;
+          hash = runnerBinDirTarballs.${system}.hash;
           stripRoot = false;
         };
 
@@ -85,7 +102,7 @@
             --prefix PATH : ${lib.makeBinPath [ nodejs nixCustom tmux rclone pkgsStatic.busybox bubblewrap slirp4netns screenshotter ]}
         '';
 
-        config = pkgs.callPackage ./config.nix { inherit frontend templates nixCustom; };
+        config = pkgs.callPackage ./config.nix { inherit frontend templates nixCustom runnerBinDir; };
 
         runnerScript = with pkgs; writeShellScript "codedown-server.sh" ''
           CONFIG_DIR=''${XDG_CONFIG_HOME:-$HOME/.config}/codedown
