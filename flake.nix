@@ -45,7 +45,7 @@
           };
           aarch64-linux = {
             url = "https://github.com/codedownio/desktop/releases/download/v1.7.2/codedown-screenshotter-0.1.1-aarch64-linux.tar.gz";
-            hash = "sha256-AdQwie5JWqaHUHDW46uG39nRmFF3WlwyLoDDNRp2R+Q=";
+            hash = "sha256-j/IspnxxnzWBKj4nkg4NU1tqKQ5JMo47IqVdEPWLBbM=";
           };
         };
 
