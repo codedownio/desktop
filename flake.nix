@@ -10,29 +10,31 @@
   outputs = { self, flake-utils, nixpkgs, templates }:
     flake-utils.lib.eachSystem [ "x86_64-linux" "aarch64-linux" ] (system:
       let
+        version = "1.7.3"; # version
+
         pkgs = import nixpkgs { inherit system; };
 
         nixTarballs = {
           x86_64-linux = {
-            url = "https://github.com/codedownio/desktop/releases/download/v1.7.3/nix-static-2.32.4-x86_64-linux.tar.gz";
-            hash = "sha256-Wh+6GqkmDbRel+Tgzia7eJlIy8xjWKaLRINwuSYvxpo=";
+            url = "https://github.com/codedownio/desktop/releases/download/v${version}/nix-static-2.32.4-x86_64-linux.tar.gz"; # nix-tarball-x86_64-url
+            hash = "sha256-2cCIQEsvcUcojhPzy731GnpDVTwWrxfa75KvxLLeOk8="; # nix-tarball-x86_64-hash
           };
           aarch64-linux = {
-            url = "https://github.com/codedownio/desktop/releases/download/v1.7.3/nix-static-2.32.4-aarch64-linux.tar.gz";
-            hash = "sha256-DFje+EYeYMlx5IKCAnspHjLikuhjFzYljSo6Ac1W9SI=";
+            url = "https://github.com/codedownio/desktop/releases/download/v${version}/nix-static-2.32.4-aarch64-linux.tar.gz"; # nix-tarball-aarch64-url
+            hash = "sha256-DFje+EYeYMlx5IKCAnspHjLikuhjFzYljSo6Ac1W9SI="; # nix-tarball-aarch64-hash
           };
         };
 
         serverTarballs = {
           x86_64-linux = {
-            url = "https://github.com/codedownio/desktop/releases/download/v1.7.3/codedown-server-1.7.3-x86_64-linux.tar.gz";
-            hash = "sha256-IVR19n5i8EmIXTHaF6o+1psH8N/AeT8nAHZjcccbtXw=";
+            url = "https://github.com/codedownio/desktop/releases/download/v${version}/codedown-server-${version}-x86_64-linux.tar.gz"; # server-tarball-x86_64-url
+            hash = "sha256-IVR19n5i8EmIXTHaF6o+1psH8N/AeT8nAHZjcccbtXw="; # server-tarball-x86_64-hash
             stripRoot = true;
             binaryPath = "codedown-server";
           };
           aarch64-linux = {
-            url = "https://github.com/codedownio/desktop/releases/download/v1.7.3/codedown-server-1.7.3-aarch64-linux.tar.gz";
-            hash = "sha256-OksIm/IpVajLLeAExw1R8/jrbLol/RfQMhZhuG1NLbY=";
+            url = "https://github.com/codedownio/desktop/releases/download/v${version}/codedown-server-${version}-aarch64-linux.tar.gz"; # server-tarball-aarch64-url
+            hash = "sha256-OksIm/IpVajLLeAExw1R8/jrbLol/RfQMhZhuG1NLbY="; # server-tarball-aarch64-hash
             stripRoot = false;
             binaryPath = "bin/codedown-server";
           };
@@ -40,23 +42,23 @@
 
         screenshotterTarballs = {
           x86_64-linux = {
-            url = "https://github.com/codedownio/desktop/releases/download/v1.7.3/codedown-screenshotter-0.1.1-x86_64-linux.tar.gz";
-            hash = "sha256-MJrYoEjcW5pAsiUV5Zmq6K8M4hZK5t3ETkYHCmvl/w0=";
+            url = "https://github.com/codedownio/desktop/releases/download/v${version}/codedown-screenshotter-0.1.1-x86_64-linux.tar.gz"; # screenshotter-tarball-x86_64-url
+            hash = "sha256-MJrYoEjcW5pAsiUV5Zmq6K8M4hZK5t3ETkYHCmvl/w0="; # screenshotter-tarball-x86_64-hash
           };
           aarch64-linux = {
-            url = "https://github.com/codedownio/desktop/releases/download/v1.7.3/codedown-screenshotter-0.1.1-aarch64-linux.tar.gz";
-            hash = "sha256-j/IspnxxnzWBKj4nkg4NU1tqKQ5JMo47IqVdEPWLBbM=";
+            url = "https://github.com/codedownio/desktop/releases/download/v${version}/codedown-screenshotter-0.1.1-aarch64-linux.tar.gz"; # screenshotter-tarball-aarch64-url
+            hash = "sha256-j/IspnxxnzWBKj4nkg4NU1tqKQ5JMo47IqVdEPWLBbM="; # screenshotter-tarball-aarch64-hash
           };
         };
 
         runnerBinDirTarballs = {
           x86_64-linux = {
-            url = "https://github.com/codedownio/desktop/releases/download/v1.7.3/runner-bin-dir-1.7.3-x86_64-linux.tar.gz";
-            hash = "sha256-oP0KhsNq/5wA0lP4BKv4eFVldhiV/Rj5At5IKP362YQ=";
+            url = "https://github.com/codedownio/desktop/releases/download/v${version}/runner-bin-dir-${version}-x86_64-linux.tar.gz"; # runner-bin-dir-x86_64-url
+            hash = "sha256-oP0KhsNq/5wA0lP4BKv4eFVldhiV/Rj5At5IKP362YQ="; # runner-bin-dir-x86_64-hash
           };
           aarch64-linux = {
-            url = "https://github.com/codedownio/desktop/releases/download/v1.7.3/runner-bin-dir-1.7.3-aarch64-linux.tar.gz";
-            hash = "sha256-XrbzYMdI+aOYelJXX7fdxsGPY5t4FGTqOjZ42NPD3ls=";
+            url = "https://github.com/codedownio/desktop/releases/download/v${version}/runner-bin-dir-${version}-aarch64-linux.tar.gz"; # runner-bin-dir-aarch64-url
+            hash = "sha256-XrbzYMdI+aOYelJXX7fdxsGPY5t4FGTqOjZ42NPD3ls="; # runner-bin-dir-aarch64-hash
           };
         };
 
@@ -85,8 +87,8 @@
         '';
 
         frontend = pkgs.fetchzip {
-          url = "https://github.com/codedownio/desktop/releases/download/v1.7.3/codedown-frontend-1.7.3.tar.gz";
-          hash = "sha256-WsKT7LOb9wpd9R1H24vfbdX06jQDfXjx8wiB2tiZdl4=";
+          url = "https://github.com/codedownio/desktop/releases/download/v${version}/codedown-frontend-${version}.tar.gz"; # frontend-url
+          hash = "sha256-WsKT7LOb9wpd9R1H24vfbdX06jQDfXjx8wiB2tiZdl4="; # frontend-hash
           stripRoot = false;
         };
 
@@ -127,6 +129,8 @@
 
       in
         {
+          inherit version;
+
           apps = {
             default = {
               type = "app";
