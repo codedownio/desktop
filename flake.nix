@@ -10,7 +10,7 @@
   outputs = { self, flake-utils, nixpkgs, templates }:
     flake-utils.lib.eachSystem [ "x86_64-linux" "aarch64-linux" ] (system:
       let
-        version = "1.7.3"; # version
+        version = "1.7.4"; # version
 
         pkgs = import nixpkgs { inherit system; };
 
@@ -21,20 +21,20 @@
           };
           aarch64-linux = {
             url = "https://github.com/codedownio/desktop/releases/download/v${version}/nix-static-2.32.4-aarch64-linux.tar.gz"; # nix-tarball-aarch64-url
-            hash = "sha256-DFje+EYeYMlx5IKCAnspHjLikuhjFzYljSo6Ac1W9SI="; # nix-tarball-aarch64-hash
+            hash = "sha256-qvwDG5lyd1qJw2ADNGhFVS+f6h4d3AKpB82vdUT0oH0="; # nix-tarball-aarch64-hash
           };
         };
 
         serverTarballs = {
           x86_64-linux = {
             url = "https://github.com/codedownio/desktop/releases/download/v${version}/codedown-server-${version}-x86_64-linux.tar.gz"; # server-tarball-x86_64-url
-            hash = "sha256-IVR19n5i8EmIXTHaF6o+1psH8N/AeT8nAHZjcccbtXw="; # server-tarball-x86_64-hash
+            hash = "sha256-SxnPa27vFyp+cwBcikiv+0KkTDT31GZE043nd90TZ+Y="; # server-tarball-x86_64-hash
             stripRoot = true;
             binaryPath = "codedown-server";
           };
           aarch64-linux = {
             url = "https://github.com/codedownio/desktop/releases/download/v${version}/codedown-server-${version}-aarch64-linux.tar.gz"; # server-tarball-aarch64-url
-            hash = "sha256-OksIm/IpVajLLeAExw1R8/jrbLol/RfQMhZhuG1NLbY="; # server-tarball-aarch64-hash
+            hash = "sha256-sV4g+7bOPAHBd+HpY/zjhadKrfy1/zqnBNQ9RVxvuw0="; # server-tarball-aarch64-hash
             stripRoot = false;
             binaryPath = "bin/codedown-server";
           };
@@ -43,11 +43,11 @@
         screenshotterTarballs = {
           x86_64-linux = {
             url = "https://github.com/codedownio/desktop/releases/download/v${version}/codedown-screenshotter-0.1.1-x86_64-linux.tar.gz"; # screenshotter-tarball-x86_64-url
-            hash = "sha256-MJrYoEjcW5pAsiUV5Zmq6K8M4hZK5t3ETkYHCmvl/w0="; # screenshotter-tarball-x86_64-hash
+            hash = "sha256-cWjXVhAU48YT1rVfk9epxBVGkIs3QqGBkCqX41RrKp4="; # screenshotter-tarball-x86_64-hash
           };
           aarch64-linux = {
             url = "https://github.com/codedownio/desktop/releases/download/v${version}/codedown-screenshotter-0.1.1-aarch64-linux.tar.gz"; # screenshotter-tarball-aarch64-url
-            hash = "sha256-j/IspnxxnzWBKj4nkg4NU1tqKQ5JMo47IqVdEPWLBbM="; # screenshotter-tarball-aarch64-hash
+            hash = "sha256-AdQwie5JWqaHUHDW46uG39nRmFF3WlwyLoDDNRp2R+Q="; # screenshotter-tarball-aarch64-hash
           };
         };
 
@@ -86,25 +86,27 @@
             --add-flags "--chrome-path ${pkgs.chromium}/bin/chromium"
         '';
 
-        frontend = pkgs.fetchzip {
-          url = "https://github.com/codedownio/desktop/releases/download/v${version}/codedown-frontend-${version}.tar.gz"; # frontend-url
-          hash = "sha256-WsKT7LOb9wpd9R1H24vfbdX06jQDfXjx8wiB2tiZdl4="; # frontend-hash
-          stripRoot = false;
-        };
-
-        runnerBinDir = pkgs.fetchzip {
-          url = runnerBinDirTarballs.${system}.url;
-          hash = runnerBinDirTarballs.${system}.hash;
-          stripRoot = false;
-        };
-
         wrappedServer = with pkgs; runCommand "codedown-server-wrapped" { buildInputs = [makeWrapper]; } ''
           mkdir -p $out/bin
           makeWrapper "${server}/${serverTarballs.${system}.binaryPath}" "$out/bin/codedown-server" \
             --prefix PATH : ${lib.makeBinPath [ nodejs nixCustom tmux rclone pkgsStatic.busybox bubblewrap slirp4netns screenshotter ]}
         '';
 
-        config = pkgs.callPackage ./config.nix { inherit frontend templates nixCustom runnerBinDir; };
+        config = pkgs.callPackage ./config.nix {
+          inherit templates nixCustom;
+
+          frontend = pkgs.fetchzip {
+            url = "https://github.com/codedownio/desktop/releases/download/v${version}/codedown-frontend-${version}.tar.gz"; # frontend-url
+            hash = "sha256-TBmI8mGfU6lLbn+h5O7lnMey/2TpYRNsS9jpA182bKM="; # frontend-hash
+            stripRoot = false;
+          };
+
+          runnerBinDir = pkgs.fetchzip {
+            url = runnerBinDirTarballs.${system}.url;
+            hash = runnerBinDirTarballs.${system}.hash;
+            stripRoot = false;
+          };
+        };
 
         runnerScript = with pkgs; writeShellScript "codedown-server.sh" ''
           CONFIG_DIR=''${XDG_CONFIG_HOME:-$HOME/.config}/codedown

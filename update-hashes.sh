@@ -1,4 +1,5 @@
-#!/usr/bin/env bash
+#!/usr/bin/env nix-shell
+#!nix-shell -i bash -p coreutils gnused gnugrep findutils nix
 
 set -euo pipefail
 
@@ -14,6 +15,7 @@ if [[ -z "$VERSION" ]]; then
 fi
 
 echo "Found version: $VERSION"
+echo ""
 
 # Function to update a hash for a given URL comment marker
 update_hash() {
@@ -56,19 +58,24 @@ echo "Updating nix-tarball hashes..."
 update_hash "nix-tarball-x86_64-url" "nix-tarball-x86_64-hash"
 update_hash "nix-tarball-aarch64-url" "nix-tarball-aarch64-hash"
 
+echo ""
 echo "Updating server-tarball hashes..."
 update_hash "server-tarball-x86_64-url" "server-tarball-x86_64-hash"
 update_hash "server-tarball-aarch64-url" "server-tarball-aarch64-hash"
 
+echo ""
 echo "Updating screenshotter-tarball hashes..."
 update_hash "screenshotter-tarball-x86_64-url" "screenshotter-tarball-x86_64-hash"
 update_hash "screenshotter-tarball-aarch64-url" "screenshotter-tarball-aarch64-hash"
 
+echo ""
 echo "Updating runner-bin-dir hashes..."
 update_hash "runner-bin-dir-x86_64-url" "runner-bin-dir-x86_64-hash"
 update_hash "runner-bin-dir-aarch64-url" "runner-bin-dir-aarch64-hash"
 
+echo ""
 echo "Updating frontend hash..."
 update_hash "frontend-url" "frontend-hash"
 
+echo ""
 echo "Done!"
