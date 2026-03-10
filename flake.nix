@@ -17,11 +17,11 @@
         nixTarballs = {
           x86_64-linux = {
             url = "https://github.com/codedownio/desktop/releases/download/v${version}/nix-static-2.32.4-x86_64-linux.tar.gz"; # nix-tarball-x86_64-url
-            hash = "sha256-2cCIQEsvcUcojhPzy731GnpDVTwWrxfa75KvxLLeOk8="; # nix-tarball-x86_64-hash
+            hash = "sha256-Wh+6GqkmDbRel+Tgzia7eJlIy8xjWKaLRINwuSYvxpo="; # nix-tarball-x86_64-hash
           };
           aarch64-linux = {
             url = "https://github.com/codedownio/desktop/releases/download/v${version}/nix-static-2.32.4-aarch64-linux.tar.gz"; # nix-tarball-aarch64-url
-            hash = "sha256-qvwDG5lyd1qJw2ADNGhFVS+f6h4d3AKpB82vdUT0oH0="; # nix-tarball-aarch64-hash
+            hash = "sha256-DFje+EYeYMlx5IKCAnspHjLikuhjFzYljSo6Ac1W9SI="; # nix-tarball-aarch64-hash
           };
         };
 
@@ -43,11 +43,11 @@
         screenshotterTarballs = {
           x86_64-linux = {
             url = "https://github.com/codedownio/desktop/releases/download/v${version}/codedown-screenshotter-0.1.1-x86_64-linux.tar.gz"; # screenshotter-tarball-x86_64-url
-            hash = "sha256-cWjXVhAU48YT1rVfk9epxBVGkIs3QqGBkCqX41RrKp4="; # screenshotter-tarball-x86_64-hash
+            hash = "sha256-MJrYoEjcW5pAsiUV5Zmq6K8M4hZK5t3ETkYHCmvl/w0="; # screenshotter-tarball-x86_64-hash
           };
           aarch64-linux = {
             url = "https://github.com/codedownio/desktop/releases/download/v${version}/codedown-screenshotter-0.1.1-aarch64-linux.tar.gz"; # screenshotter-tarball-aarch64-url
-            hash = "sha256-AdQwie5JWqaHUHDW46uG39nRmFF3WlwyLoDDNRp2R+Q="; # screenshotter-tarball-aarch64-hash
+            hash = "sha256-j/IspnxxnzWBKj4nkg4NU1tqKQ5JMo47IqVdEPWLBbM="; # screenshotter-tarball-aarch64-hash
           };
         };
 

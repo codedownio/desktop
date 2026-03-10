@@ -1,5 +1,5 @@
 #!/usr/bin/env nix-shell
-#!nix-shell -i bash -p coreutils gnused gnugrep findutils nix
+#!nix-shell -i bash -p coreutils gnused gnugrep findutils nix jq
 
 set -euo pipefail
 
@@ -17,10 +17,37 @@ fi
 echo "Found version: $VERSION"
 echo ""
 
-# Function to update a hash for a given URL comment marker
+# Compute hash for fetchzip with stripRoot=true (the default).
+# nix store prefetch-file --unpack strips root, matching fetchzip's default.
+prefetch_hash_strip_root() {
+    local url="$1"
+    nix store prefetch-file --unpack --json "$url" 2>/dev/null | jq -r .hash
+}
+
+# Compute hash for fetchzip with stripRoot=false.
+# Neither nix-prefetch-url --unpack nor nix store prefetch-file --unpack can
+# disable root stripping, so we ask Nix to evaluate the actual fetchzip
+# derivation with a fake hash and extract the correct hash from the error.
+prefetch_hash_no_strip_root() {
+    local url="$1"
+    local output
+    output=$(nix-build --no-out-link --expr "
+      with import <nixpkgs> {};
+      fetchzip {
+        url = \"$url\";
+        sha256 = \"sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=\";
+        stripRoot = false;
+      }
+    " 2>&1 || true)
+    echo "$output" | grep -oP 'got:\s+\Ksha256-[A-Za-z0-9+/=]+'
+}
+
+# Function to update a hash for a given URL comment marker.
+# Pass "no-strip" as $3 for fetchzip entries with stripRoot = false.
 update_hash() {
     local url_marker="$1"
     local hash_marker="$2"
+    local strip_mode="${3:-strip}"
 
     # Extract the URL line and parse out the URL template
     local url_line=$(grep "# $url_marker\$" "$FLAKE_NIX")
@@ -38,8 +65,12 @@ update_hash() {
 
     echo "Fetching: $url"
 
-    # Use nix-prefetch-url to get the hash (--unpack for tarballs used with fetchzip)
-    local hash=$(nix-prefetch-url --unpack "$url" 2>/dev/null | xargs nix hash convert --hash-algo sha256 --to sri)
+    local hash
+    if [[ "$strip_mode" == "no-strip" ]]; then
+        hash=$(prefetch_hash_no_strip_root "$url")
+    else
+        hash=$(prefetch_hash_strip_root "$url")
+    fi
 
     if [[ -z "$hash" ]]; then
         echo "Error: Failed to fetch hash for $url"
@@ -54,28 +85,29 @@ update_hash() {
 }
 
 # Update all hashes
+# Pass "no-strip" for fetchzip entries that use stripRoot = false
 echo "Updating nix-tarball hashes..."
-update_hash "nix-tarball-x86_64-url" "nix-tarball-x86_64-hash"
-update_hash "nix-tarball-aarch64-url" "nix-tarball-aarch64-hash"
+update_hash "nix-tarball-x86_64-url" "nix-tarball-x86_64-hash" no-strip
+update_hash "nix-tarball-aarch64-url" "nix-tarball-aarch64-hash" no-strip
 
 echo ""
 echo "Updating server-tarball hashes..."
-update_hash "server-tarball-x86_64-url" "server-tarball-x86_64-hash"
-update_hash "server-tarball-aarch64-url" "server-tarball-aarch64-hash"
+update_hash "server-tarball-x86_64-url" "server-tarball-x86_64-hash" strip
+update_hash "server-tarball-aarch64-url" "server-tarball-aarch64-hash" no-strip
 
 echo ""
 echo "Updating screenshotter-tarball hashes..."
-update_hash "screenshotter-tarball-x86_64-url" "screenshotter-tarball-x86_64-hash"
-update_hash "screenshotter-tarball-aarch64-url" "screenshotter-tarball-aarch64-hash"
+update_hash "screenshotter-tarball-x86_64-url" "screenshotter-tarball-x86_64-hash" no-strip
+update_hash "screenshotter-tarball-aarch64-url" "screenshotter-tarball-aarch64-hash" no-strip
 
 echo ""
 echo "Updating runner-bin-dir hashes..."
-update_hash "runner-bin-dir-x86_64-url" "runner-bin-dir-x86_64-hash"
-update_hash "runner-bin-dir-aarch64-url" "runner-bin-dir-aarch64-hash"
+update_hash "runner-bin-dir-x86_64-url" "runner-bin-dir-x86_64-hash" no-strip
+update_hash "runner-bin-dir-aarch64-url" "runner-bin-dir-aarch64-hash" no-strip
 
 echo ""
 echo "Updating frontend hash..."
-update_hash "frontend-url" "frontend-hash"
+update_hash "frontend-url" "frontend-hash" no-strip
 
 echo ""
 echo "Done!"
