@@ -7,7 +7,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 FLAKE_NIX="$SCRIPT_DIR/flake.nix"
 
 # Read the version from the flake using nix eval
-VERSION=$(nix eval "$SCRIPT_DIR#version.x86_64-linux" --raw)
+VERSION=$(nix eval "$SCRIPT_DIR#version" --raw)
 
 if [[ -z "$VERSION" ]]; then
     echo "Error: Could not evaluate version from flake"
@@ -52,29 +52,8 @@ update_hash() {
     sed -i -E "s|(hash = \")sha256-[^\"]+(\"; # $hash_marker)|\1${hash}\2|" "$FLAKE_NIX"
 }
 
-# Update all hashes
-echo "Updating nix-tarball hashes..."
-update_hash "nix-tarball-x86_64-url" "nix-tarball-x86_64-hash"
-update_hash "nix-tarball-aarch64-url" "nix-tarball-aarch64-hash"
-
-echo ""
-echo "Updating server-tarball hashes..."
-update_hash "server-tarball-x86_64-url" "server-tarball-x86_64-hash"
-update_hash "server-tarball-aarch64-url" "server-tarball-aarch64-hash"
-
-echo ""
-echo "Updating screenshotter-tarball hashes..."
-update_hash "screenshotter-tarball-x86_64-url" "screenshotter-tarball-x86_64-hash"
-update_hash "screenshotter-tarball-aarch64-url" "screenshotter-tarball-aarch64-hash"
-
-echo ""
-echo "Updating runner-bin-dir hashes..."
-update_hash "runner-bin-dir-x86_64-url" "runner-bin-dir-x86_64-hash"
-update_hash "runner-bin-dir-aarch64-url" "runner-bin-dir-aarch64-hash"
-
-echo ""
-echo "Updating frontend hash..."
-update_hash "frontend-url" "frontend-hash"
+echo "Updating tarball hash..."
+update_hash "tarball-url" "tarball-hash"
 
 echo ""
 echo "Done!"
