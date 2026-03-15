@@ -30,7 +30,7 @@ update_hash() {
 
     # Extract the URL from the line (it's between quotes after url =)
     # The URL contains ${version} which we need to substitute
-    local url_template=$(echo "$url_line" | sed -E 's/.*url = "([^"]+)".*/\1/')
+    local url_template=$(echo "$url_line" | sed -E 's/.*= "([^"]+)".*/\1/')
 
     # Substitute ${version} with the actual version
     local url=$(echo "$url_template" | sed "s/\${version}/$VERSION/g")
@@ -49,11 +49,13 @@ update_hash() {
 
     # Update the hash in flake.nix
     # Find the line with the hash marker and replace the hash value
-    sed -i -E "s|(hash = \")sha256-[^\"]+(\"; # $hash_marker)|\1${hash}\2|" "$FLAKE_NIX"
+    sed -i -E "s|(= \")sha256-[^\"]+(\"; # $hash_marker)|\1${hash}\2|" "$FLAKE_NIX"
 }
 
-echo "Updating tarball hash..."
-update_hash "tarball-url" "tarball-hash"
+for arch in amd64 arm64; do
+    echo "Updating $arch tarball hash..."
+    update_hash "tarball-url-$arch" "tarball-hash-$arch"
+    echo ""
+done
 
-echo ""
 echo "Done!"
