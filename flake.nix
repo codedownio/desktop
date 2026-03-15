@@ -68,6 +68,11 @@
             mkdir -p $out/lib/codedown
             cp -r . $out/lib/codedown/
 
+            # Remove chrome-sandbox so Electron falls back to the user namespace
+            # sandbox instead of aborting over the SUID bit (which can't be set
+            # in the nix store).
+            rm -f $out/lib/codedown/chrome-sandbox
+
             mkdir -p $out/bin
             makeWrapper $out/lib/codedown/codedown $out/bin/codedown
 
