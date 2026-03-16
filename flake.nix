@@ -29,7 +29,7 @@
             hash = hashFor.${system};
           };
 
-          nativeBuildInputs = with pkgs; [ autoPatchelfHook makeWrapper ];
+          nativeBuildInputs = with pkgs; [ autoPatchelfHook ];
 
           buildInputs = with pkgs; [
             alsa-lib
@@ -74,7 +74,17 @@
             rm -f $out/lib/codedown/chrome-sandbox
 
             mkdir -p $out/bin
-            makeWrapper $out/lib/codedown/codedown $out/bin/codedown
+            cat > $out/bin/codedown <<'WRAPPER'
+            #!/bin/bash
+            SANDBOX_ARGS=""
+            if ! command -v unshare >/dev/null 2>&1 || ! unshare --user --pid echo >/dev/null 2>&1; then
+              SANDBOX_ARGS="--no-sandbox"
+              echo "WARNING: unprivileged user namespaces are not available; running chrome with --no-sandbox" >&2
+            fi
+            exec @out@/lib/codedown/codedown $SANDBOX_ARGS "$@"
+            WRAPPER
+            chmod +x $out/bin/codedown
+            substituteInPlace $out/bin/codedown --replace-fail "@out@" "$out"
 
             runHook postInstall
           '';
