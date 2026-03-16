@@ -60,6 +60,7 @@
           # ELF binaries and symlinks pointing to store paths that don't exist on
           # the build machine. Skip automatic patching and do it manually below.
           dontAutoPatchelf = true;
+          dontPatchELF = true;
           dontCheckForBrokenSymlinks = true;
 
           installPhase = ''
