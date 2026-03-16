@@ -58,8 +58,8 @@
 
           # The resources dir contains a bundled nix store template with its own
           # ELF binaries and symlinks pointing to store paths that don't exist on
-          # the build machine. Exclude it from autoPatchelf and broken-symlink checks.
-          autoPatchelfIgnorePaths = [ "lib/codedown/resources" ];
+          # the build machine. Skip automatic patching and do it manually below.
+          dontAutoPatchelf = true;
           dontCheckForBrokenSymlinks = true;
 
           installPhase = ''
@@ -67,6 +67,10 @@
 
             mkdir -p $out/lib/codedown
             cp -r . $out/lib/codedown/
+
+            # Patch only the top-level Electron binaries/libs, not the bundled
+            # resources dir (which contains static binaries and a store template).
+            autoPatchelf --no-recurse $out/lib/codedown
 
             # Remove chrome-sandbox so Electron falls back to the user namespace
             # sandbox instead of aborting over the SUID bit (which can't be set
@@ -80,6 +84,9 @@
             if ! command -v unshare >/dev/null 2>&1 || ! unshare --user --pid echo >/dev/null 2>&1; then
               SANDBOX_ARGS="--no-sandbox"
               echo "WARNING: unprivileged user namespaces are not available; running chrome with --no-sandbox" >&2
+            elif [ "$(cat /proc/sys/kernel/apparmor_restrict_unprivileged_userns 2>/dev/null)" = "1" ]; then
+              SANDBOX_ARGS="--no-sandbox"
+              echo "WARNING: AppArmor restricts unprivileged user namespaces; running chrome with --no-sandbox" >&2
             fi
             exec @out@/lib/codedown/codedown $SANDBOX_ARGS "$@"
             WRAPPER
