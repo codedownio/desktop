@@ -57,11 +57,9 @@
           ];
 
           # The resources dir contains a bundled nix store template with its own
-          # ELF binaries and symlinks pointing to store paths that don't exist on
-          # the build machine. Skip automatic patching and do it manually below.
-          dontAutoPatchelf = true;
-          dontPatchELF = true;
-          dontCheckForBrokenSymlinks = true;
+          # ELF binaries, static binaries, and shebangs that must not be touched.
+          # Disable the entire fixup phase and handle autoPatchelf manually.
+          dontFixup = true;
 
           installPhase = ''
             runHook preInstall
@@ -79,6 +77,7 @@
             rm -f $out/lib/codedown/chrome-sandbox
 
             install -Dm755 ${./wrapper.sh} $out/bin/codedown
+            patchShebangs $out/bin/codedown
             substituteInPlace $out/bin/codedown --replace-fail "@out@" "$out"
 
             runHook postInstall
