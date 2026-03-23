@@ -6,7 +6,7 @@
   outputs = { self, nixpkgs }:
     let
       systems = [ "x86_64-linux" "aarch64-linux" ];
-      version = "1.8.3"; # version
+      version = "1.8.4"; # version
       forAllSystems = nixpkgs.lib.genAttrs systems;
 
       urlFor = {
@@ -14,8 +14,8 @@
         aarch64-linux = "https://github.com/codedownio/desktop/releases/download/v${version}/codedown-${version}-linux-arm64-unpacked.tar.gz"; # tarball-url-arm64
       };
       hashFor = {
-        x86_64-linux = "sha256-Q8inxcjRHiJX1Sr1P4tA6Le17uFXNtd3hSj/b7aGx5M="; # tarball-hash-amd64
-        aarch64-linux = "sha256-RypcxlzgC9n+mWov9oGDsI2N3Halfxg4KJFV7BGTkdw="; # tarball-hash-arm64
+        x86_64-linux = "sha256-2hly431EMUfcaCjBg0y/T/UmQz4i1nCFc2GLY06NtbE="; # tarball-hash-amd64
+        aarch64-linux = "sha256-/0arBaZv3oznuzh62p6rWa+r0b67xHq2WuMlsyk+ntE="; # tarball-hash-arm64
       };
 
       mkCodedown = system:
